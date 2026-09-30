@@ -1,0 +1,290 @@
+<UserControl x:Class="NodePulse.Views.AboutView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Styles>
+        <!-- ★ 功能入口卡片按钮 -->
+        <Style Selector="Button.actionCard">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="0:0:0.18"
+                                                   Easing="CubicEaseOut"/>
+                </Transitions>
+            </Setter>
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+        <Style Selector="Button.actionCard:pointerover">
+            <Setter Property="RenderTransform" Value="translateY(-2px)"/>
+        </Style>
+        <Style Selector="Button.actionCard:pressed">
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+
+        <Style Selector="Button.actionCard Border.actionCardBorder">
+            <Setter Property="Background" Value="{DynamicResource SurfacePrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+                    <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2"/>
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.actionCard:pointerover Border.actionCardBorder">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BoxShadow" Value="0 5 14 0 #40000000"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{DynamicResource AppWindowBackgroundBrush}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel MaxWidth="720"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Margin="0 32 0 40"
+                        Spacing="20">
+
+                <!-- 应用图标 + 名称 + 简介 -->
+                <StackPanel HorizontalAlignment="Center" Spacing="14">
+                    <Border Width="96" Height="96"
+                            CornerRadius="20"
+                            Background="{DynamicResource InstanceIconBoxBrush}"
+                            HorizontalAlignment="Center"
+                            ClipToBounds="True">
+                        <Image Source="avares://NodePulse/Assets/app.ico"
+                               Width="80" Height="80"
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="NodePulse 启动器"
+                               FontSize="26"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <TextBlock Text="基于 .NET 8 / Avalonia 的《我的世界》Java 版第三方启动器"
+                               FontSize="13"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                    <TextBlock Text="支持原版、Fabric、Forge、NeoForge、Quilt、OptiFine 全加载器，内置 Modrinth 模组 / 整合包 / 光影 / 资源包下载，集成陶瓦与 Linker 双联机方案，离线 / 外置 / 正版全账户支持，绿色便携，深色浅色随心切换。"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               MaxWidth="560"
+                               LineHeight="20"
+                               Margin="0 4 0 0"
+                               Foreground="{DynamicResource TextMutedBrush}"/>
+                </StackPanel>
+
+                <!-- ★ 四个功能入口（2×2） -->
+                <Grid ColumnDefinitions="*,12,*"
+                      RowDefinitions="Auto,12,Auto"
+                      Margin="0 8 0 0">
+
+                    <!-- ① 使用帮助手册 -->
+                    <Button Grid.Row="0" Grid.Column="0"
+                            Classes="actionCard"
+                            Click="OnOpenHelpClick">
+                        <Border Classes="actionCardBorder" Padding="18 16">
+                            <StackPanel Spacing="10">
+                                <Border Width="36" Height="36"
+                                        CornerRadius="10"
+                                        Background="#3A7BD5"
+                                        HorizontalAlignment="Left">
+                                    <PathIcon Data="M12,3C10.73,3 9.5,3.34 8.5,4V20C9.5,19.34 10.73,19 12,19C13.27,19 14.5,19.34 15.5,20V4C14.5,3.34 13.27,3 12,3M6.5,5C5.85,5 5.2,5.12 4.5,5.34V21C5.2,20.8 5.85,20.7 6.5,20.7C7.5,20.7 8.5,20.9 9.5,21.34V5.34C8.5,4.9 7.5,5 6.5,5M17.5,5C16.5,5 15.5,4.9 14.5,5.34V21.34C15.5,20.9 16.5,20.7 17.5,20.7C18.15,20.7 18.8,20.8 19.5,21V5.34C18.8,5.12 18.15,5 17.5,5Z"
+                                              Width="20" Height="20"
+                                              Foreground="White"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="使用帮助手册"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="查看安装、启动、联机等详细教程"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <!-- ② 赞助软件作者 -->
+                    <Button Grid.Row="0" Grid.Column="2"
+                            Classes="actionCard"
+                            Click="OnOpenSponsorClick">
+                        <Border Classes="actionCardBorder" Padding="18 16">
+                            <StackPanel Spacing="10">
+                                <Border Width="36" Height="36"
+                                        CornerRadius="10"
+                                        Background="#946CE6"
+                                        HorizontalAlignment="Left">
+                                    <PathIcon Data="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+                                              Width="20" Height="20"
+                                              Foreground="White"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="赞助软件作者"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="请我喝杯咖啡，支持持续更新"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <!-- ③ GitHub 开源地址 -->
+                    <Button Grid.Row="2" Grid.Column="0"
+                            Classes="actionCard"
+                            Click="OnOpenGithubClick">
+                        <Border Classes="actionCardBorder" Padding="18 16">
+                            <StackPanel Spacing="10">
+                                <Border Width="36" Height="36"
+                                        CornerRadius="10"
+                                        Background="#2B3137"
+                                        HorizontalAlignment="Left">
+                                    <PathIcon Data="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"
+                                              Width="20" Height="20"
+                                              Foreground="White"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="GitHub 开源地址"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="查看源码、提交 Issue、参与开发"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+
+                    <!-- ④ 加入 QQ 交流群 -->
+                    <Button Grid.Row="2" Grid.Column="2"
+                            Classes="actionCard"
+                            Click="OnJoinQQGroupClick">
+                        <Border Classes="actionCardBorder" Padding="18 16">
+                            <StackPanel Spacing="10">
+                                <Border Width="36" Height="36"
+                                        CornerRadius="10"
+                                        Background="#12B7F5"
+                                        HorizontalAlignment="Left">
+                                    <PathIcon Data="M12,3C7.79,3 4.7,6.41 4.07,11.45C3.55,15.6 4.15,19.79 5.06,21.13C5.7,22.07 6.87,22.19 7.66,21.5C8.55,20.72 9.5,19.82 10.36,19.31C10.88,19.01 11.42,18.94 12,18.94C12.58,18.94 13.12,19.01 13.64,19.31C14.5,19.82 15.45,20.72 16.34,21.5C17.13,22.19 18.3,22.07 18.94,21.13C19.85,19.79 20.45,15.6 19.93,11.45C19.3,6.41 16.21,3 12,3M8.5,11A1.5,1.5 0 0,1 10,12.5A1.5,1.5 0 0,1 8.5,14A1.5,1.5 0 0,1 7,12.5A1.5,1.5 0 0,1 8.5,11M15.5,11A1.5,1.5 0 0,1 17,12.5A1.5,1.5 0 0,1 15.5,14A1.5,1.5 0 0,1 14,12.5A1.5,1.5 0 0,1 15.5,11M12,16C13.43,16 14.73,16.42 15.73,17.13C14.73,17.67 13.43,18 12,18C10.57,18 9.27,17.67 8.27,17.13C9.27,16.42 10.57,16 12,16Z"
+                                              Width="20" Height="20"
+                                              Foreground="White"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="加入 QQ 交流群"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="加群反馈问题，和其他玩家交流"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+                </Grid>
+
+                <!-- 版本信息卡片 -->
+                <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                        CornerRadius="10"
+                        Padding="20 16"
+                        BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                        BorderThickness="1">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="版本信息"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <Grid ColumnDefinitions="120,*">
+                            <TextBlock Text="版本"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="1.0.0"
+                                       FontSize="13"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="120,*">
+                            <TextBlock Text="基于"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Grid.Column="1"
+                                       Text=".NET 8  ·  Avalonia 11.2.3"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="120,*">
+                            <TextBlock Text="项目组"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="NodePulse 项目组"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="120,*">
+                            <TextBlock Text="官网"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                            <HyperlinkButton Grid.Column="1"
+                                             NavigateUri="https://www.mcnodepulse.dpdns.org"
+                                             Padding="0"
+                                             HorizontalAlignment="Left">
+                                <TextBlock Text="https://www.mcnodepulse.dpdns.org"
+                                           FontSize="13"
+                                           Foreground="{DynamicResource AccentBrush}"/>
+                            </HyperlinkButton>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 版权 -->
+                <TextBlock Text="© 2026 NodePulse 项目组"
+                           FontSize="11"
+                           HorizontalAlignment="Center"
+                           Margin="0 10 0 0"
+                           Foreground="{DynamicResource TextMutedBrush}"/>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

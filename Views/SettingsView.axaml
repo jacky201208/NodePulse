@@ -1,0 +1,763 @@
+<UserControl x:Class="NodePulse.Views.SettingsView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:NodePulse.Controls"
+             x:Name="SettingsRoot">
+    <UserControl.Styles>
+        <Style Selector="Button.instTab">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="Padding" Value="18 8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="72"/>
+            <Setter Property="Margin" Value="2 0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button.instTab:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        </Style>
+        <Style Selector="Button.instTab:pressed">
+            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+        </Style>
+        <Style Selector="Button.instTab.selected">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="Button.instTab.selected:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="Button.toolBtn">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.toolBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.accentBtn">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.accentBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.dangerBtn">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="{DynamicResource ButtonDangerBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.dangerBtn:pointerover">
+            <Setter Property="Background" Value="#B84455"/>
+        </Style>
+
+        <Style Selector="Button.backCircleBtn">
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="CornerRadius" Value="21"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="{DynamicResource ButtonSecondaryBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.backCircleBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.saveBtn">
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="{DynamicResource ButtonSuccessBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.saveBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ButtonSuccessDarkBrush}"/>
+        </Style>
+
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource SurfacePrimaryBrush}"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="18 16"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style Selector="TextBlock.cardTitle">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="Margin" Value="0 0 0 12"/>
+        </Style>
+
+        <Style Selector="TextBlock.rowLabel">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="TextBlock.hint">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style Selector="ListBox.javaList">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="MaxHeight" Value="220"/>
+        </Style>
+        <Style Selector="ListBox.javaList ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0 0 0 8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+
+        <Style Selector="ListBox.javaList ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.javaList ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.javaList ListBoxItem:selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style Selector="Border.javaCard">
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSubtleBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style Selector="ListBox.javaList ListBoxItem:selected Border.javaCard">
+            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+
+        <Style Selector="controls|EmojiIcon.javaCheck">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+
+        <Style Selector="ListBox.javaList ListBoxItem:selected controls|EmojiIcon.javaCheck">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{DynamicResource AppWindowBackgroundBrush}">
+        <Grid Margin="16" RowDefinitions="Auto,Auto,*,Auto">
+
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0 0 0 12">
+                <Button Classes="backCircleBtn"
+                        Command="{Binding ReturnCommand}">
+                    <Border Width="20" Height="20" Background="White">
+                        <Border.OpacityMask>
+                            <ImageBrush Source="avares://NodePulse/Assets/Icons/back.png"
+                                        Stretch="Uniform"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </Button>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="12"
+                            VerticalAlignment="Center"
+                            Margin="14 0 0 0">
+                    <TextBlock Text="实例设置"
+                               FontSize="22"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextLinkBrush}"/>
+                    <TextBlock Text="{Binding SelectedVersionName}"
+                               FontSize="13"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </StackPanel>
+            </Grid>
+
+            <Border Grid.Row="1"
+                    Background="{DynamicResource SurfacePrimaryBrush}"
+                    CornerRadius="10"
+                    Padding="6"
+                    Margin="0 0 0 12"
+                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                    BorderThickness="1">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding Tabs}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Classes="instTab"
+                                        Classes.selected="{Binding IsSelected}"
+                                        Command="{Binding $parent[UserControl].DataContext.SelectTabCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="{Binding DisplayName}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+
+            <Panel Grid.Row="2">
+
+                <ScrollViewer IsVisible="{Binding IsOverviewTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="14">
+
+                        <Border Classes="card">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Width="64" Height="64"
+                                        Background="{DynamicResource InstanceIconBoxBrush}"
+                                        CornerRadius="10"
+                                        Margin="0 0 14 0"
+                                        VerticalAlignment="Center"
+                                        ClipToBounds="True">
+                                    <Image Source="{Binding Instance.IconBitmap}"
+                                           Width="52" Height="52"
+                                           Stretch="UniformToFill"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                                    <TextBlock Text="{Binding InstanceName}"
+                                               FontSize="18"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="{Binding InstanceSubtitle}"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="实例信息" Classes="cardTitle"/>
+                                <Grid ColumnDefinitions="*,*,*">
+                                    <StackPanel Grid.Column="0" Spacing="4">
+                                        <TextBlock Text="启动次数"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                        <TextBlock Text="{Binding LaunchCountText}"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Spacing="4">
+                                        <TextBlock Text="类型"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                        <TextBlock Text="{Binding InstanceTypeText}"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Spacing="4">
+                                        <TextBlock Text="加载器"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                        <TextBlock Text="{Binding LoaderName}"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    </StackPanel>
+                                </Grid>
+                                <TextBlock Text="{Binding TotalSizeText, StringFormat='占用空间：{0}'}"
+                                           Classes="hint"
+                                           Margin="0 12 0 0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="快捷方式" Classes="cardTitle"/>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <Button Classes="toolBtn"
+                                            Content="实例文件夹"
+                                            Command="{Binding OpenInstanceFolderCommand}"
+                                            Width="130" Height="36"/>
+                                    <Button Classes="toolBtn"
+                                            Content="存档文件夹"
+                                            Command="{Binding OpenSavesFolderCommand}"
+                                            Width="130" Height="36"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="高级管理" Classes="cardTitle"/>
+                                <WrapPanel>
+                                    <Button Classes="toolBtn"
+                                            Content="补全文件"
+                                            Command="{Binding RepairFilesCommand}"
+                                            Width="110" Height="36"
+                                            Margin="0 0 10 10"/>
+                                    <Button Classes="toolBtn"
+                                            Content="重置设置"
+                                            Command="{Binding ResetSettingsCommand}"
+                                            Width="110" Height="36"
+                                            Margin="0 0 10 10"/>
+                                    <Button Classes="dangerBtn"
+                                            Content="删除实例"
+                                            Command="{Binding DeleteInstanceCommand}"
+                                            Width="110" Height="36"
+                                            Margin="0 0 10 10"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+                <ScrollViewer IsVisible="{Binding IsSettingsTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="14">
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="启动选项" Classes="cardTitle"/>
+
+                                <Grid ColumnDefinitions="*,240" Margin="0 0 0 6">
+                                    <TextBlock Text="实例隔离" Classes="rowLabel"/>
+                                    <ComboBox Grid.Column="1"
+                                              SelectedIndex="0"
+                                              IsEnabled="False"
+                                              Height="34"
+                                              HorizontalAlignment="Stretch"
+                                              Background="{DynamicResource TextBoxBackgroundBrush}"
+                                              Foreground="{DynamicResource TextPrimaryBrush}"
+                                              BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                              CornerRadius="6">
+                                        <ComboBoxItem>开启</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+                                <TextBlock Text="开启后 mods/config/saves 等都存放在 versions/&lt;实例名&gt;/ 下"
+                                           Classes="hint"
+                                           Margin="0 0 0 14"/>
+
+                                <Grid ColumnDefinitions="*,240" Margin="0 0 0 12">
+                                    <TextBlock Text="游戏窗口标题" Classes="rowLabel"/>
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding WindowTitleModes}"
+                                              SelectedItem="{Binding SelectedWindowTitleMode}"
+                                              Height="34"
+                                              HorizontalAlignment="Stretch"
+                                              Background="{DynamicResource TextBoxBackgroundBrush}"
+                                              Foreground="{DynamicResource TextPrimaryBrush}"
+                                              BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                              CornerRadius="6"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,240"
+                                      Margin="0 0 0 12"
+                                      IsVisible="{Binding IsCustomWindowTitle}">
+                                    <TextBlock Text="自定义窗口标题" Classes="rowLabel"/>
+                                    <TextBox Grid.Column="1"
+                                             Text="{Binding CustomWindowTitle}"
+                                             Watermark="例如 Minecraft 1.20.1"
+                                             Height="34"
+                                             VerticalContentAlignment="Center"
+                                             Background="{DynamicResource TextBoxBackgroundBrush}"
+                                             Foreground="{DynamicResource TextPrimaryBrush}"
+                                             BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                             CornerRadius="6"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,240">
+                                    <TextBlock Text="自定义信息" Classes="rowLabel"/>
+                                    <TextBox Grid.Column="1"
+                                             Text="{Binding CustomInfo}"
+                                             Watermark="跟随全局设置"
+                                             Height="34"
+                                             VerticalContentAlignment="Center"
+                                             Background="{DynamicResource TextBoxBackgroundBrush}"
+                                             Foreground="{DynamicResource TextPrimaryBrush}"
+                                             BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                             CornerRadius="6"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="Java 运行时" Classes="cardTitle"/>
+
+                                <Grid ColumnDefinitions="*,240" Margin="0 0 0 12">
+                                    <TextBlock Text="Java 选择" Classes="rowLabel"/>
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding JavaModes}"
+                                              SelectedItem="{Binding SelectedJavaMode}"
+                                              Height="34"
+                                              HorizontalAlignment="Stretch"
+                                              Background="{DynamicResource TextBoxBackgroundBrush}"
+                                              Foreground="{DynamicResource TextPrimaryBrush}"
+                                              BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                              CornerRadius="6"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto"
+                                      IsVisible="{Binding IsManualJava}"
+                                      Margin="0 0 0 8">
+                                    <TextBlock Text="Java 列表" Classes="rowLabel"/>
+                                    <Button Grid.Column="1"
+                                            Classes="toolBtn"
+                                            Content="刷新"
+                                            Command="{Binding RefreshJavaListCommand}"
+                                            Width="80" Height="32"/>
+                                </Grid>
+
+                                <ListBox Classes="javaList"
+                                         ItemsSource="{Binding JavaList}"
+                                         SelectedItem="{Binding SelectedJava}"
+                                         IsVisible="{Binding IsManualJava}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Classes="javaCard"
+                                                    CornerRadius="8"
+                                                    Padding="14 10">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <StackPanel Grid.Column="0" Spacing="3">
+                                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                                            <TextBlock Text="{Binding MajorVersion, StringFormat='Java {0}'}"
+                                                                       FontSize="14"
+                                                                       FontWeight="SemiBold"
+                                                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                            <TextBlock Text="{Binding FullVersion}"
+                                                                       FontSize="12"
+                                                                       VerticalAlignment="Center"
+                                                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                                        </StackPanel>
+                                                        <TextBlock Text="{Binding JavaPath}"
+                                                                   FontSize="11"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                                    </StackPanel>
+
+                                                    <!-- ★ EmojiIcon：check -->
+                                                    <controls:EmojiIcon Grid.Column="1"
+                                                                        Classes="javaCheck"
+                                                                        IconSource="avares://NodePulse/Assets/Icons/Emoji/check.png"
+                                                                        IconSize="18"
+                                                                        VerticalAlignment="Center"
+                                                                        Margin="10 0 0 0"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <Border IsVisible="{Binding IsAutoJava}"
+                                        Background="{DynamicResource SurfaceSecondaryBrush}"
+                                        CornerRadius="8"
+                                        Padding="14 12"
+                                        BorderBrush="{DynamicResource BorderSubtleBrush}"
+                                        BorderThickness="1">
+                                    <TextBlock Text="已开启自动选择，启动时会根据版本需求自动挑选合适的 Java"
+                                               Classes="hint"
+                                               TextWrapping="Wrap"/>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="游戏内存" Classes="cardTitle"/>
+
+                                <StackPanel Spacing="10" Margin="0 0 0 14">
+                                    <RadioButton GroupName="MemMode"
+                                                 Content="跟随全局设置"
+                                                 IsChecked="{Binding IsMemoryModeGlobal}"/>
+                                    <RadioButton GroupName="MemMode"
+                                                 Content="自动配置"
+                                                 IsChecked="{Binding IsMemoryModeAuto}"/>
+                                    <RadioButton GroupName="MemMode"
+                                                 Content="自定义"
+                                                 IsChecked="{Binding IsMemoryModeCustom}"/>
+                                </StackPanel>
+
+                                <Slider Value="{Binding CustomMemoryMB}"
+                                        Minimum="512"
+                                        Maximum="32768"
+                                        TickFrequency="512"
+                                        IsSnapToTickEnabled="True"
+                                        IsEnabled="{Binding IsCustomMemoryMode}"
+                                        Margin="0 0 0 10"/>
+
+                                <Grid ColumnDefinitions="*,Auto" Margin="0 0 0 4">
+                                    <TextBlock Text="系统内存" Classes="rowLabel"/>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding MemoryInfoText}"
+                                               FontSize="13"
+                                               VerticalAlignment="Center"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                </Grid>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="游戏分配" Classes="rowLabel"/>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding MemoryAllocText}"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"
+                                               Foreground="{DynamicResource AccentBrush}"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="服务器" Classes="cardTitle"/>
+
+                                <Grid ColumnDefinitions="*,Auto" Margin="0 0 0 8">
+                                    <TextBlock Text="覆盖全局自动进入服务器" Classes="rowLabel"/>
+                                    <ToggleSwitch Grid.Column="1"
+                                                  IsChecked="{Binding OverrideAutoJoinServer}"
+                                                  OnContent="" OffContent=""/>
+                                </Grid>
+
+                                <TextBox Text="{Binding AutoJoinServerOverride}"
+                                         Watermark="留空则不自动加入"
+                                         IsEnabled="{Binding OverrideAutoJoinServer}"
+                                         Height="34"
+                                         VerticalContentAlignment="Center"
+                                         Background="{DynamicResource TextBoxBackgroundBrush}"
+                                         Foreground="{DynamicResource TextPrimaryBrush}"
+                                         BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                         CornerRadius="6"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="JVM / 游戏参数" Classes="cardTitle"/>
+
+                                <StackPanel Spacing="6" Margin="0 0 0 12">
+                                    <TextBlock Text="JVM 附加参数" Classes="rowLabel"/>
+                                    <TextBox Text="{Binding JvmArgs}"
+                                             Watermark="例如 -XX:+UseG1GC"
+                                             Height="34"
+                                             VerticalContentAlignment="Center"
+                                             Background="{DynamicResource TextBoxBackgroundBrush}"
+                                             Foreground="{DynamicResource TextPrimaryBrush}"
+                                             BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                             CornerRadius="6"/>
+                                </StackPanel>
+
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="游戏附加参数" Classes="rowLabel"/>
+                                    <TextBox Text="{Binding GameArgs}"
+                                             Watermark="附加给游戏主类的参数"
+                                             Height="34"
+                                             VerticalContentAlignment="Center"
+                                             Background="{DynamicResource TextBoxBackgroundBrush}"
+                                             Foreground="{DynamicResource TextPrimaryBrush}"
+                                             BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                             CornerRadius="6"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="窗口" Classes="cardTitle"/>
+
+                                <Grid ColumnDefinitions="*,16,*" Margin="0 0 0 14">
+                                    <StackPanel Grid.Column="0" Spacing="6">
+                                        <TextBlock Text="窗口宽"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                        <TextBox Text="{Binding WindowWidth}"
+                                                 Height="34"
+                                                 VerticalContentAlignment="Center"
+                                                 Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                 Foreground="{DynamicResource TextPrimaryBrush}"
+                                                 BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                 CornerRadius="6"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Spacing="6">
+                                        <TextBlock Text="窗口高"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                        <TextBox Text="{Binding WindowHeight}"
+                                                 Height="34"
+                                                 VerticalContentAlignment="Center"
+                                                 Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                 Foreground="{DynamicResource TextPrimaryBrush}"
+                                                 BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                 CornerRadius="6"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="全屏启动" Classes="rowLabel"/>
+                                    <ToggleSwitch Grid.Column="1"
+                                                  IsChecked="{Binding Fullscreen}"
+                                                  OnContent="" OffContent=""/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+                <ScrollViewer IsVisible="{Binding IsExportTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="14">
+
+                        <!-- ★ EmojiIcon：warning -->
+                        <Border Background="#2A1F0A"
+                                BorderBrush="#7A5A20"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="14 12">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/warning.png"
+                                                    IconSize="18"
+                                                    VerticalAlignment="Center"/>
+                                <TextBlock Text="导出的整合包不包含游戏本体 jar，接收方需要自行下载原版。"
+                                           FontSize="12"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Center"
+                                           Foreground="#E0C180"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="整合包信息" Classes="cardTitle"/>
+                                <Grid ColumnDefinitions="*,16,*">
+                                    <StackPanel Grid.Column="0" Spacing="6">
+                                        <TextBlock Text="整合包名称"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                        <TextBox Text="{Binding ExportName}"
+                                                 Height="34"
+                                                 VerticalContentAlignment="Center"
+                                                 Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                 Foreground="{DynamicResource TextPrimaryBrush}"
+                                                 BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                 CornerRadius="6"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Spacing="6">
+                                        <TextBlock Text="整合包版本"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                        <TextBox Text="{Binding ExportVersion}"
+                                                 Height="34"
+                                                 VerticalContentAlignment="Center"
+                                                 Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                 Foreground="{DynamicResource TextPrimaryBrush}"
+                                                 BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                 CornerRadius="6"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="导出内容" Classes="cardTitle"/>
+                                <StackPanel Spacing="10">
+                                    <CheckBox IsChecked="{Binding ExportIncludeGameJar}">
+                                        <TextBlock Text="包含客户端 jar（体积较大）"
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding ExportIncludeMods}">
+                                        <TextBlock Text="包含模组 / 配置 / 资源包 / 光影包"
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding ExportIncludeSaves}">
+                                        <TextBlock Text="包含存档"
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    </CheckBox>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Spacing="12"
+                                    Margin="0 8 0 0">
+                            <Button Classes="accentBtn"
+                                    Command="{Binding ExportCommand}"
+                                    Width="160" Height="44"
+                                    Content="开始导出"
+                                    IsEnabled="{Binding !IsExporting}"/>
+                        </StackPanel>
+
+                        <ProgressBar Value="{Binding ExportProgress}"
+                                     Minimum="0"
+                                     Maximum="100"
+                                     Height="6"
+                                     IsVisible="{Binding IsExporting}"
+                                     Background="{DynamicResource SurfaceSecondaryBrush}"
+                                     Foreground="{DynamicResource AccentBrush}"/>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Panel>
+
+            <Grid Grid.Row="3" ColumnDefinitions="Auto,*" Margin="0 12 0 0">
+                <Button Grid.Column="0"
+                        Classes="saveBtn"
+                        Content="保存设置"
+                        Command="{Binding SaveSettingsCommand}"/>
+                <TextBlock Grid.Column="1"
+                           Text="{Binding StatusText}"
+                           VerticalAlignment="Center"
+                           Margin="14 0 0 0"
+                           FontSize="12"
+                           Foreground="{DynamicResource TextLinkBrush}"/>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</UserControl>

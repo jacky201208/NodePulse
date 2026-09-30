@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>false</UseWPF>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+
+    <!-- ★ 应用图标（任务栏、文件列表、标题栏都用它） -->
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+
+    <!-- ★ 程序集信息（显示在文件属性里） -->
+    <AssemblyName>NodePulse</AssemblyName>
+    <Product>NodePulse 启动器</Product>
+    <AssemblyTitle>NodePulse 启动器</AssemblyTitle>
+    <Version>1.0.0</Version>
+    <Company>NodePulse</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.2.3" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="SharpCompress" Version="0.38.0" />
+    <PackageReference Include="ZstdSharp" Version="0.7.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+  </ItemGroup>
+
+  <!-- ================================================================ -->
+  <!-- ★ 计算 Terracotta 目标平台子目录                                 -->
+  <!--   优先使用 -r 指定的 RuntimeIdentifier；                          -->
+  <!--   没指定则用当前 SDK 宿主平台（即 dotnet build 所在系统）；       -->
+  <!--   都没有则兜底到 windows-x64。                                    -->
+  <!-- ================================================================ -->
+  <PropertyGroup>
+    <!-- 1. 显式指定 RID 时（dotnet publish -r xxx） -->
+    <TerracottaFolder Condition="'$(RuntimeIdentifier)' == 'win-x64'">windows-x64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(RuntimeIdentifier)' == 'win-arm64'">windows-arm64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(RuntimeIdentifier)' == 'linux-x64'">linux-x64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">linux-arm64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(RuntimeIdentifier)' == 'osx-x64'">macos-x64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">macos-arm64</TerracottaFolder>
+
+    <!-- 2. 没指定 RID 时，根据 SDK 宿主平台自动判断（dotnet build） -->
+    <TerracottaFolder Condition="'$(TerracottaFolder)' == '' AND '$(NETCoreSdkRuntimeIdentifier)' == 'win-x64'">windows-x64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(TerracottaFolder)' == '' AND '$(NETCoreSdkRuntimeIdentifier)' == 'win-arm64'">windows-arm64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(TerracottaFolder)' == '' AND '$(NETCoreSdkRuntimeIdentifier)' == 'linux-x64'">linux-x64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(TerracottaFolder)' == '' AND '$(NETCoreSdkRuntimeIdentifier)' == 'linux-arm64'">linux-arm64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(TerracottaFolder)' == '' AND '$(NETCoreSdkRuntimeIdentifier)' == 'osx-x64'">macos-x64</TerracottaFolder>
+    <TerracottaFolder Condition="'$(TerracottaFolder)' == '' AND '$(NETCoreSdkRuntimeIdentifier)' == 'osx-arm64'">macos-arm64</TerracottaFolder>
+
+    <!-- 3. 最终兜底：Windows x64 -->
+    <TerracottaFolder Condition="'$(TerracottaFolder)' == ''">windows-x64</TerracottaFolder>
+  </PropertyGroup>
+
+  <!-- ================================================================ -->
+  <!-- ★ Assets 资源打包                                                 -->
+  <!--   ★ 不再使用 Assets\** 通配，避免把其他平台的 Terracotta 也打进去  -->
+  <!--   ★ 如需新增资源目录，请在这里手动添加                            -->
+  <!-- ================================================================ -->
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\app.ico" />
+    <AvaloniaResource Include="Assets\Icons\**" />
+    <AvaloniaResource Include="Assets\Loaders\**" />
+    <AvaloniaResource Include="Assets\Terracotta\$(TerracottaFolder)\**" />
+    <!-- ★ 新增：OptiFine 静默安装桥接工具（跨平台通用，无需分平台） -->
+    <AvaloniaResource Include="Assets\OptiFine\**" />
+    <!-- Assets\Linker\ 已废弃：Linker 改为运行时下载，不再打包 -->
+  </ItemGroup>
+
+  <!-- ================================================================ -->
+  <!-- ★ 编译提示：打印本次打包的 Terracotta 平台                      -->
+  <!--   挂在 PrepareForBuild 上，build 和 publish 两条路径都一定会跑    -->
+  <!-- ================================================================ -->
+  <Target Name="ShowTerracottaPlatform" BeforeTargets="PrepareForBuild">
+    <Message Importance="high"
+             Text="[NodePulse] 本次打包 Terracotta 平台：$(TerracottaFolder)" />
+  </Target>
+</Project>

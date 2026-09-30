@@ -1,0 +1,202 @@
+<Window x:Class="NodePulse.Views.SkinManagerDialog"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="皮肤管理"
+        Width="720" Height="560"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#1E1C30"
+        SystemDecorations="BorderOnly">
+    <Window.Styles>
+        <!-- 皮肤卡片 -->
+        <Style Selector="Button.skinCard">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.skinCard:pointerover">
+            <Setter Property="RenderTransform" Value="translateY(-2px)"/>
+        </Style>
+        <Style Selector="Button.skinCard:pressed">
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+
+        <Style Selector="Border.skinCardBorder">
+            <Setter Property="Background" Value="#2A2840"/>
+            <Setter Property="BorderBrush" Value="#3A365C"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.skinCard:pointerover Border.skinCardBorder">
+            <Setter Property="BorderBrush" Value="#4A90E2"/>
+            <Setter Property="Background" Value="#383458"/>
+        </Style>
+
+        <Style Selector="Button.closeBtn">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="24 0"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Background" Value="#3A365C"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.closeBtn:pointerover">
+            <Setter Property="Background" Value="#484270"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="24 20 24 20">
+
+        <!-- 标题 -->
+        <StackPanel Grid.Row="0" Spacing="6" Margin="0 0 0 18">
+            <TextBlock Text="皮肤管理"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       Foreground="#E2E2F2"/>
+            <TextBlock Text="点击任意皮肤即可应用到当前角色"
+                       FontSize="12"
+                       Foreground="#8888A0"/>
+        </StackPanel>
+
+        <!-- 皮肤列表 -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="18">
+
+                <!-- 默认皮肤 -->
+                <StackPanel Spacing="10">
+                    <TextBlock Text="默认"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="#A9A9C2"/>
+                    <ItemsControl x:Name="BuiltInList">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Classes="skinCard"
+                                        Click="OnSkinClicked"
+                                        Tag="{Binding}"
+                                        Margin="0 0 12 12">
+                                    <Border Classes="skinCardBorder"
+                                            Width="104"
+                                            Padding="10">
+                                        <StackPanel Spacing="8">
+                                            <Border Width="80" Height="80"
+                                                    CornerRadius="8"
+                                                    ClipToBounds="True"
+                                                    Background="#121120"
+                                                    HorizontalAlignment="Center">
+                                                <Image Source="{Binding Preview}"
+                                                       Stretch="UniformToFill"
+                                                       RenderOptions.BitmapInterpolationMode="None"/>
+                                            </Border>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontSize="11"
+                                                       TextAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Foreground="#E2E2F2"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- 已导入 -->
+                <StackPanel Spacing="10" x:Name="ImportedSection">
+                    <TextBlock Text="已导入"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="#A9A9C2"/>
+                    <ItemsControl x:Name="ImportedList">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Classes="skinCard"
+                                        Click="OnSkinClicked"
+                                        Tag="{Binding}"
+                                        Margin="0 0 12 12">
+                                    <Border Classes="skinCardBorder"
+                                            Width="104"
+                                            Padding="10">
+                                        <StackPanel Spacing="8">
+                                            <Border Width="80" Height="80"
+                                                    CornerRadius="8"
+                                                    ClipToBounds="True"
+                                                    Background="#121120"
+                                                    HorizontalAlignment="Center">
+                                                <Image Source="{Binding Preview}"
+                                                       Stretch="UniformToFill"
+                                                       RenderOptions.BitmapInterpolationMode="None"/>
+                                            </Border>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontSize="11"
+                                                       TextAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Foreground="#E2E2F2"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- 空提示 -->
+                <TextBlock x:Name="EmptyHint"
+                           Text="还没有导入任何皮肤。点击「导入皮肤」按钮添加。"
+                           FontSize="12"
+                           TextAlignment="Center"
+                           Foreground="#8888A0"
+                           Margin="0 20 0 0"
+                           IsVisible="False"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- 底部 -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0 16 0 0">
+            <TextBlock x:Name="StatusLabel"
+                       Grid.Column="0"
+                       FontSize="12"
+                       VerticalAlignment="Center"
+                       Foreground="#8888A0"/>
+            <Button Grid.Column="1"
+                    Classes="closeBtn"
+                    Content="关闭"
+                    Click="OnCloseClicked"/>
+        </Grid>
+
+    </Grid>
+</Window>

@@ -1,0 +1,303 @@
+<UserControl x:Class="NodePulse.Views.VersionConfigView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Styles>
+        <Style Selector="Button.loaderBtn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0 0 0 10"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style Selector="Button.loaderBtn > Border">
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="MinHeight" Value="76"/>
+        </Style>
+
+        <Style Selector="Button.loaderBtn:pointerover > Border">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondaryBrush}"/>
+        </Style>
+
+        <Style Selector="Button.loaderBtn.selected > Border">
+            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        </Style>
+
+        <Style Selector="Button.startBtn">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="22"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style Selector="Button.startBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.startBtn:pressed">
+            <Setter Property="Background" Value="#3A80D2"/>
+        </Style>
+
+        <Style Selector="ComboBox.versionBox">
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Background" Value="{DynamicResource SurfacePrimaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondaryBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10 0"/>
+        </Style>
+
+        <Style Selector="ComboBox.versionBox /template/ ItemsPresenter">
+            <Setter Property="MinWidth" Value="200"/>
+        </Style>
+
+        <Style Selector="ComboBox.versionBox ComboBoxItem">
+            <Setter Property="Padding" Value="12 6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+
+        <Style Selector="Button.backCircleBtn">
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="CornerRadius" Value="21"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="{DynamicResource ButtonSecondaryBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.backCircleBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+        <Style Selector="Button.backCircleBtn:pressed">
+            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{DynamicResource AppWindowBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="24 20 24 12">
+            <Button Classes="backCircleBtn"
+                    Command="{Binding CancelCommand}">
+                <Border Width="20" Height="20"
+                        Background="White">
+                    <Border.OpacityMask>
+                        <ImageBrush Source="avares://NodePulse/Assets/Icons/back.png"
+                                    Stretch="Uniform"/>
+                    </Border.OpacityMask>
+                </Border>
+            </Button>
+
+            <TextBlock Grid.Column="1"
+                       Text="{Binding BaseVersion}"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimaryBrush}"
+                       VerticalAlignment="Center"
+                       Margin="14 0 0 0"/>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Margin="24 8 24 16">
+            <TextBlock Text="游戏名称"
+                       FontSize="13"
+                       Foreground="{DynamicResource TextSecondaryBrush}"
+                       Margin="0 0 0 6"/>
+            <TextBox Text="{Binding GameName}"
+                     Height="42"
+                     Background="{DynamicResource SurfaceSecondaryBrush}"
+                     Foreground="{DynamicResource TextPrimaryBrush}"
+                     BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                     BorderThickness="1"
+                     FontSize="14"
+                     Padding="14 0"
+                     CornerRadius="6"
+                     VerticalContentAlignment="Center"/>
+
+            <TextBlock Text="{Binding ConflictMessage}"
+                       FontSize="12"
+                       Foreground="{DynamicResource ButtonWarningBrush}"
+                       Margin="0 6 0 0"
+                       IsVisible="{Binding HasNameConflict}"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="2"
+                      Margin="24 0 24 0"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="加载器"
+                           FontSize="13"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           Margin="0 0 0 10"/>
+
+                <ItemsControl ItemsSource="{Binding Loaders}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Classes="loaderBtn"
+                                    Classes.selected="{Binding IsSelected}"
+                                    Command="{Binding $parent[UserControl].DataContext.SelectLoaderCommand}"
+                                    CommandParameter="{Binding}">
+                                <Border Padding="16 14 6 14">
+                                    <Grid ColumnDefinitions="Auto,*,200"
+                                          RowDefinitions="Auto,Auto">
+
+                                        <!-- ★ 加载器图标：外框 48×48 + 内层小圆角 + IconSize 缩放 -->
+                                        <Border Grid.Row="0" Grid.Column="0"
+                                                Grid.RowSpan="2"
+                                                Width="48" Height="48"
+                                                Background="{Binding IconBg}"
+                                                CornerRadius="8"
+                                                Margin="0 0 14 0"
+                                                VerticalAlignment="Top"
+                                                ClipToBounds="True">
+                                            <Border Width="{Binding IconSize}"
+                                                    Height="{Binding IconSize}"
+                                                    CornerRadius="6"
+                                                    ClipToBounds="True"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center">
+                                                <Image Source="{Binding IconBitmap}"
+                                                       Stretch="UniformToFill"/>
+                                            </Border>
+                                        </Border>
+
+                                        <StackPanel Grid.Row="0" Grid.Column="1"
+                                                    VerticalAlignment="Center"
+                                                    Spacing="3"
+                                                    Margin="0 0 12 0">
+                                            <TextBlock Text="{Binding DisplayName}"
+                                                       FontSize="15"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource TextMutedBrush}"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+
+                                        <Grid Grid.Row="0" Grid.Column="2"
+                                              Width="200" Height="34"
+                                              HorizontalAlignment="Right"
+                                              VerticalAlignment="Center">
+
+                                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                                    BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="6"
+                                                    Padding="10 0"
+                                                    IsVisible="{Binding IsLoadingVersions}">
+                                                <TextBlock Text="正在读取..."
+                                                           FontSize="12"
+                                                           Foreground="{DynamicResource TextMutedBrush}"
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            <Border Background="#2A1A1A"
+                                                    BorderBrush="#7A3030"
+                                                    BorderThickness="1"
+                                                    CornerRadius="6"
+                                                    Padding="10 0"
+                                                    IsVisible="{Binding ShowLoadError}">
+                                                <TextBlock Text="{Binding LoadingText}"
+                                                           FontSize="12"
+                                                           Foreground="#E88A8A"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                            </Border>
+
+                                            <TextBlock Text="{Binding SelectedVersion}"
+                                                       FontSize="13"
+                                                       Foreground="{DynamicResource AccentBrush}"
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Right"
+                                                       TextAlignment="Right"
+                                                       IsVisible="{Binding ShowVersionText}"/>
+
+                                            <ComboBox Classes="versionBox"
+                                                      ItemsSource="{Binding AvailableVersions}"
+                                                      SelectedItem="{Binding SelectedVersion}"
+                                                      MaxDropDownHeight="160"
+                                                      HorizontalAlignment="Right"
+                                                      IsVisible="{Binding ShowVersionCombo}"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="1" Grid.Column="1"
+                                              Margin="0 12 0 0"
+                                              IsVisible="{Binding ShowApiRow}">
+                                            <CheckBox IsChecked="{Binding InstallFabricApi}"
+                                                      VerticalAlignment="Center">
+                                                <TextBlock Text="安装 Fabric API（推荐）"
+                                                           FontSize="12"
+                                                           Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            </CheckBox>
+                                        </Grid>
+
+                                        <Grid Grid.Row="1" Grid.Column="2"
+                                              Width="200"
+                                              HorizontalAlignment="Right"
+                                              Margin="0 12 0 0"
+                                              IsVisible="{Binding ShowApiRow}">
+                                            <ComboBox Classes="versionBox"
+                                                      ItemsSource="{Binding AvailableApiVersions}"
+                                                      SelectedItem="{Binding SelectedApiVersion}"
+                                                      IsEnabled="{Binding InstallFabricApi}"
+                                                      MaxDropDownHeight="160"
+                                                      HorizontalAlignment="Right"/>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0 16 0 24">
+            <Button Classes="startBtn"
+                    Command="{Binding StartDownloadCommand}"
+                    Width="200" Height="46">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <Path Data="M 12,3 L 12,17 M 5,10 L 12,17 L 19,10 M 5,21 L 19,21"
+                          Stroke="White"
+                          StrokeThickness="2"
+                          StrokeLineCap="Round"
+                          Width="18" Height="18"
+                          Stretch="Uniform"
+                          VerticalAlignment="Center"/>
+                    <TextBlock Text="开始下载"
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="White"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

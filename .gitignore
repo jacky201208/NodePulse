@@ -1,0 +1,43 @@
+# ==================== .NET 编译产物 ====================
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ==================== IDE ====================
+.vs/
+.idea/
+*.DotSettings.user
+
+# ==================== 发布产物 ====================
+Publish/
+publish/
+*.zip
+
+# ==================== 运行时数据（不要上传） ====================
+.NodePulse/
+.minecraft/
+skin-debug/
+skins/
+
+# ==================== 日志 ====================
+*.log
+account-debug.log
+card-avatar.log
+mc-latest.log
+crash.log
+instance-scan.log
+optifine-install.log
+last_launch_args.txt
+failed_downloads.txt
+
+# ==================== 用户配置 ====================
+accounts.json
+global-settings.json
+
+# ==================== 系统文件 ====================
+Thumbs.db
+Desktop.ini
+.DS_Store

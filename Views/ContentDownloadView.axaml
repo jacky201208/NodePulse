@@ -1,0 +1,777 @@
+<UserControl x:Class="NodePulse.Views.ContentDownloadView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:NodePulse.Controls">
+    <UserControl.Styles>
+        <Style Selector="Button.cardBtn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0 2 0 12"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="ClipToBounds" Value="False"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="0:0:0.18"
+                                                   Easing="CubicEaseOut"/>
+                </Transitions>
+            </Setter>
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+        <Style Selector="Button.cardBtn:pointerover">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="RenderTransform" Value="translateY(-2px)"/>
+        </Style>
+        <Style Selector="Button.cardBtn:pressed">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+        <Style Selector="Button.cardBtn:focus">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style Selector="Button.cardBtn Border.cardBorder">
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderPrimaryBrush}"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+                    <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.cardBtn:pointerover Border.cardBorder">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BoxShadow" Value="0 5 14 0 #40000000"/>
+        </Style>
+
+        <Style Selector="Button.installBtn">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style Selector="Button.installBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.installBtn:pressed">
+            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+        </Style>
+
+        <Style Selector="Button.searchBtn">
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.searchBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+        </Style>
+        <Style Selector="Button.searchBtn:pressed">
+            <Setter Property="Background" Value="#3A80D2"/>
+        </Style>
+
+        <Style Selector="Button.versionInstallBtn">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style Selector="Button.versionInstallBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.backBtn">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="14 0"/>
+            <Setter Property="Background" Value="{DynamicResource ButtonSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.backBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+        <Style Selector="Button.backBtn TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- ★ 分页按钮 -->
+        <Style Selector="Button.pageBtn">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Padding" Value="18 0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondaryBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.pageBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        </Style>
+        <Style Selector="Button.pageBtn:pressed">
+            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+        </Style>
+        <Style Selector="Button.pageBtn:disabled">
+            <Setter Property="Opacity" Value="0.4"/>
+            <Setter Property="Cursor" Value="Arrow"/>
+        </Style>
+
+        <Style Selector="Border.versionRow">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+                    <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.versionRow:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BoxShadow" Value="0 4 12 0 #30000000"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid>
+        <Grid IsVisible="{Binding !IsDetailView}"
+              RowDefinitions="Auto,Auto,Auto,*,Auto">
+
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="*,10,Auto"
+                  Margin="0 0 0 12">
+                <TextBox Grid.Column="0"
+                         Text="{Binding SearchQuery}"
+                         Watermark="搜索名称..."
+                         Height="44"
+                         Background="{DynamicResource SurfaceSecondaryBrush}"
+                         Foreground="{DynamicResource TextPrimaryBrush}"
+                         BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                         BorderThickness="1"
+                         CornerRadius="10"
+                         FontSize="14"
+                         Padding="16 0"
+                         VerticalContentAlignment="Center"/>
+
+                <Button Grid.Column="2"
+                        Classes="searchBtn"
+                        Content="搜索"
+                        Command="{Binding SearchCommand}"
+                        Height="44" Width="90"/>
+            </Grid>
+
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="Auto,8,Auto,8,Auto,8,*,Auto"
+                  Margin="0 0 0 16">
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                    <TextBlock Text="加载器" FontSize="12"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding LoaderOptions}"
+                              SelectedItem="{Binding SelectedLoader}"
+                              Width="100" Height="34"
+                              Background="{DynamicResource SurfaceSecondaryBrush}"
+                              Foreground="{DynamicResource TextPrimaryBrush}"
+                              BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                              BorderThickness="1"
+                              CornerRadius="8"
+                              FontSize="12"
+                              VerticalContentAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                    <TextBlock Text="游戏版本" FontSize="12"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding GameVersionOptions}"
+                              SelectedItem="{Binding SelectedGameVersion}"
+                              Width="100" Height="34"
+                              Background="{DynamicResource SurfaceSecondaryBrush}"
+                              Foreground="{DynamicResource TextPrimaryBrush}"
+                              BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                              BorderThickness="1"
+                              CornerRadius="8"
+                              FontSize="12"
+                              VerticalContentAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                    <TextBlock Text="排序" FontSize="12"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding SortOptions}"
+                              SelectedItem="{Binding SelectedSort}"
+                              Width="100" Height="34"
+                              Background="{DynamicResource SurfaceSecondaryBrush}"
+                              Foreground="{DynamicResource TextPrimaryBrush}"
+                              BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                              BorderThickness="1"
+                              CornerRadius="8"
+                              FontSize="12"
+                              VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0 0 0 10">
+                <TextBlock Grid.Column="0"
+                           Text="{Binding ListTitle}"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimaryBrush}"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                    <TextBlock Text="保存到" FontSize="12"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Instances}"
+                              SelectedItem="{Binding SelectedInstance}"
+                              MinWidth="140" Height="30"
+                              Background="{DynamicResource SurfaceSecondaryBrush}"
+                              Foreground="{DynamicResource TextPrimaryBrush}"
+                              BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                              BorderThickness="1"
+                              CornerRadius="8"
+                              FontSize="12"
+                              VerticalContentAlignment="Center">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <!-- ★ 结果区 + 加载遮罩 -->
+            <Panel Grid.Row="3">
+                <ScrollViewer x:Name="ResultScroll"
+                              VerticalScrollBarVisibility="Auto"
+                              Padding="0 4 0 0">
+                    <StackPanel ClipToBounds="False">
+                        <ItemsControl ItemsSource="{Binding SearchResults}"
+                                      ClipToBounds="False">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Classes="cardBtn"
+                                            Command="{Binding $parent[UserControl].DataContext.OpenDetailCommand}"
+                                            CommandParameter="{Binding}">
+                                        <Border Classes="cardBorder"
+                                                Background="{DynamicResource SurfacePrimaryBrush}"
+                                                CornerRadius="10"
+                                                Padding="16 14"
+                                                BorderThickness="1">
+                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                                <Border Grid.Column="0"
+                                                        Width="72" Height="72"
+                                                        CornerRadius="14"
+                                                        ClipToBounds="True"
+                                                        Background="{DynamicResource SurfaceSecondaryBrush}"
+                                                        Margin="0 0 16 0"
+                                                        VerticalAlignment="Center">
+                                                    <Image Source="{Binding IconBitmap}"
+                                                           Width="72" Height="72"
+                                                           Stretch="UniformToFill"/>
+                                                </Border>
+
+                                                <StackPanel Grid.Column="1"
+                                                            VerticalAlignment="Center"
+                                                            Spacing="5">
+                                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                                        <TextBlock Text="{Binding Title}"
+                                                                   FontSize="16"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                                                   VerticalAlignment="Center"/>
+                                                        <Border Background="#1BD96A"
+                                                                CornerRadius="4"
+                                                                Padding="5 1"
+                                                                VerticalAlignment="Center">
+                                                            <TextBlock Text="MR"
+                                                                       FontSize="10"
+                                                                       Foreground="White"/>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <TextBlock Text="{Binding Description}"
+                                                               FontSize="12"
+                                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               MaxLines="1"/>
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="14">
+                                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                                            <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/arrow-down.png"
+                                                                                IconSize="11"
+                                                                                VerticalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding DownloadsText}"
+                                                                       FontSize="11"
+                                                                       VerticalAlignment="Center"
+                                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                                        </StackPanel>
+                                                        <TextBlock Text="{Binding Author}"
+                                                                   FontSize="11"
+                                                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+
+                                                <Button Grid.Column="3"
+                                                        Classes="installBtn"
+                                                        Content="安装"
+                                                        Command="{Binding $parent[UserControl].DataContext.InstallModCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Width="72" Height="36"
+                                                        Background="{DynamicResource SurfacePressedBrush}"
+                                                        Foreground="{DynamicResource TextPrimaryBrush}"
+                                                        VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- 加载遮罩 -->
+                <Border IsVisible="{Binding IsPageLoading}"
+                        Background="{DynamicResource SurfacePrimaryBrush}"
+                        Opacity="0.85"
+                        CornerRadius="10">
+                    <StackPanel VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Spacing="14">
+                        <ProgressBar IsIndeterminate="True"
+                                     Width="160" Height="4"
+                                     Background="{DynamicResource SurfaceSecondaryBrush}"
+                                     Foreground="{DynamicResource AccentBrush}"/>
+                        <TextBlock Text="正在加载..."
+                                   FontSize="13"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                    </StackPanel>
+                </Border>
+            </Panel>
+
+            <!-- ★ 分页栏 -->
+            <Border Grid.Row="4"
+                    Background="{DynamicResource SurfacePrimaryBrush}"
+                    CornerRadius="10"
+                    Padding="14 10"
+                    Margin="0 12 0 0"
+                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                    BorderThickness="1">
+                <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,*">
+                    <Button Grid.Column="1"
+                            Classes="pageBtn"
+                            Content="← 上一页"
+                            Command="{Binding PrevPageCommand}"
+                            IsEnabled="{Binding CanGoPrev}"/>
+
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding PageInfoText}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Margin="18 0"
+                               MinWidth="180"
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                    <Button Grid.Column="3"
+                            Classes="pageBtn"
+                            Content="下一页 →"
+                            Command="{Binding NextPageCommand}"
+                            IsEnabled="{Binding CanGoNext}"/>
+
+                    <TextBlock Grid.Column="4"
+                               Text="{Binding StatusMessage}"
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               Margin="18 0 0 0"
+                               Foreground="{DynamicResource TextMutedBrush}"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- 详情视图（不变） -->
+        <Grid IsVisible="{Binding IsDetailView}"
+              RowDefinitions="Auto,*">
+
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0 0 0 12">
+                <Button Grid.Column="0"
+                        Classes="backBtn"
+                        Command="{Binding CloseDetailCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="6"
+                                VerticalAlignment="Center">
+                        <Border Width="16" Height="16"
+                                Background="White"
+                                VerticalAlignment="Center">
+                            <Border.OpacityMask>
+                                <ImageBrush Source="avares://NodePulse/Assets/Icons/back.png"
+                                            Stretch="Uniform"/>
+                            </Border.OpacityMask>
+                        </Border>
+                        <TextBlock Text="返回" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <TextBlock Grid.Column="1"
+                           Text="{Binding CurrentProject.Title, FallbackValue='加载中...'}"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimaryBrush}"
+                           VerticalAlignment="Center"
+                           Margin="16 0"/>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
+                    <TextBlock Text="保存到" FontSize="12"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Instances}"
+                              SelectedItem="{Binding SelectedInstance}"
+                              MinWidth="140" Height="30"
+                              Background="{DynamicResource SurfaceSecondaryBrush}"
+                              Foreground="{DynamicResource TextPrimaryBrush}"
+                              BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                              BorderThickness="1"
+                              CornerRadius="8"
+                              FontSize="12"
+                              VerticalContentAlignment="Center">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*,16,1.2*">
+                <Border Grid.Column="0"
+                        Background="{DynamicResource SurfacePrimaryBrush}"
+                        CornerRadius="10"
+                        Padding="20"
+                        BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                        BorderThickness="1">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="16">
+                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                <Border Width="96" Height="96"
+                                        CornerRadius="18"
+                                        ClipToBounds="True"
+                                        Background="{DynamicResource SurfaceSecondaryBrush}">
+                                    <Image Source="{Binding CurrentProject.IconBitmap}"
+                                           Width="96" Height="96"
+                                           Stretch="UniformToFill"/>
+                                </Border>
+
+                                <StackPanel VerticalAlignment="Center" Spacing="6">
+                                    <TextBlock Text="{Binding CurrentProject.Title}"
+                                               FontSize="20"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="14">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/arrow-down.png"
+                                                                IconSize="12"
+                                                                VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CurrentProject.DownloadsText}"
+                                                       FontSize="12"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/heart.png"
+                                                                IconSize="12"
+                                                                VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CurrentProject.FollowersText}"
+                                                       FontSize="12"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding CurrentProject.Description}"
+                                       FontSize="13"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       TextWrapping="Wrap"/>
+
+                            <ItemsControl ItemsSource="{Binding CurrentProject.Categories}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{DynamicResource SurfaceSecondaryBrush}"
+                                                CornerRadius="6"
+                                                Padding="10 4"
+                                                Margin="0 0 6 6">
+                                            <TextBlock Text="{Binding}"
+                                                       FontSize="11"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Border Height="1"
+                                    Background="{DynamicResource BorderPrimaryBrush}"
+                                    Margin="0 4"/>
+
+                            <TextBlock Text="项目介绍"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="{Binding CurrentProject.BodyPlainText}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       TextWrapping="Wrap"
+                                       LineHeight="18"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+
+                <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="{Binding ReleaseVersions.Count, StringFormat='正式版（{0}）'}"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                   Margin="0 0 0 4"/>
+
+                        <ItemsControl ItemsSource="{Binding ReleaseVersions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Classes="versionRow"
+                                            Background="{DynamicResource SurfacePrimaryBrush}"
+                                            CornerRadius="10"
+                                            Padding="16 14"
+                                            Margin="0 0 0 10"
+                                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                            BorderThickness="1">
+                                        <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Row="0" Grid.Column="0"
+                                                        Orientation="Horizontal" Spacing="10">
+                                                <TextBlock Text="{Binding VersionNumber}"
+                                                           FontSize="15"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                                           VerticalAlignment="Center"/>
+                                                <Border CornerRadius="4"
+                                                        Padding="6 2"
+                                                        VerticalAlignment="Center"
+                                                        Background="{Binding VersionTypeColor}">
+                                                    <TextBlock Text="{Binding VersionTypeText}"
+                                                               FontSize="10"
+                                                               Foreground="White"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <Button Grid.Row="0" Grid.Column="1"
+                                                    Classes="versionInstallBtn"
+                                                    Content="安装"
+                                                    Command="{Binding $parent[UserControl].DataContext.InstallVersionCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Width="72" Height="32"
+                                                    Background="{DynamicResource AccentBrush}"
+                                                    Foreground="White"/>
+
+                                            <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                  ColumnDefinitions="Auto,*"
+                                                  Margin="0 10 0 0">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="游戏版本"
+                                                           FontSize="11"
+                                                           Foreground="{DynamicResource TextMutedBrush}"
+                                                           Width="60"/>
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding GameVersionsText}"
+                                                           FontSize="12"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                                           TextWrapping="Wrap"/>
+                                            </Grid>
+
+                                            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                                  ColumnDefinitions="Auto,*,Auto"
+                                                  Margin="0 6 0 0">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="加载器"
+                                                           FontSize="11"
+                                                           Foreground="{DynamicResource TextMutedBrush}"
+                                                           Width="60"/>
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding LoadersText}"
+                                                           FontSize="12"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding PublishedText}"
+                                                           FontSize="11"
+                                                           Foreground="{DynamicResource TextMutedBrush}"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Border IsVisible="{Binding HasBetaVersions}"
+                                Background="{DynamicResource SurfacePrimaryBrush}"
+                                CornerRadius="10"
+                                Margin="0 6 0 0"
+                                BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Button Command="{Binding ToggleBetaCommand}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="16 12"
+                                        CornerRadius="10"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Center"
+                                        Cursor="Hand">
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding BetaHeaderArrow}"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0 0 8 0"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding BetaHeaderText}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2"
+                                                   Text="测试版本可能不稳定"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Button>
+
+                                <ItemsControl ItemsSource="{Binding BetaVersions}"
+                                              IsVisible="{Binding IsBetaExpanded}"
+                                              Margin="0 0 0 8">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Classes="versionRow"
+                                                    Background="{DynamicResource SurfaceSecondaryBrush}"
+                                                    CornerRadius="8"
+                                                    Padding="16 14"
+                                                    Margin="8 0 8 8"
+                                                    BorderBrush="{DynamicResource BorderSubtleBrush}"
+                                                    BorderThickness="1">
+                                                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                                                    <StackPanel Grid.Row="0" Grid.Column="0"
+                                                                Orientation="Horizontal" Spacing="10">
+                                                        <TextBlock Text="{Binding VersionNumber}"
+                                                                   FontSize="15"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                                                   VerticalAlignment="Center"/>
+                                                        <Border CornerRadius="4"
+                                                                Padding="6 2"
+                                                                VerticalAlignment="Center"
+                                                                Background="{Binding VersionTypeColor}">
+                                                            <TextBlock Text="{Binding VersionTypeText}"
+                                                                       FontSize="10"
+                                                                       Foreground="White"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <Button Grid.Row="0" Grid.Column="1"
+                                                            Classes="installBtn"
+                                                            Content="安装"
+                                                            Command="{Binding $parent[UserControl].DataContext.InstallVersionCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            Width="72" Height="32"
+                                                            Background="{DynamicResource SurfacePressedBrush}"
+                                                            Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                    <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                          ColumnDefinitions="Auto,*"
+                                                          Margin="0 10 0 0">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="游戏版本"
+                                                                   FontSize="11"
+                                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                                   Width="60"/>
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding GameVersionsText}"
+                                                                   FontSize="12"
+                                                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                                                   TextWrapping="Wrap"/>
+                                                    </Grid>
+                                                    <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                                          ColumnDefinitions="Auto,*,Auto"
+                                                          Margin="0 6 0 0">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="加载器"
+                                                                   FontSize="11"
+                                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                                   Width="60"/>
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding LoadersText}"
+                                                                   FontSize="12"
+                                                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                        <TextBlock Grid.Column="2"
+                                                                   Text="{Binding PublishedText}"
+                                                                   FontSize="11"
+                                                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                                    </Grid>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+
+            <Border Grid.Row="1"
+                    Background="#80000000"
+                    CornerRadius="10"
+                    IsVisible="{Binding IsLoadingDetail}">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
+                    <ProgressBar IsIndeterminate="True"
+                                 Width="200" Height="4"
+                                 Background="{DynamicResource SurfaceSecondaryBrush}"
+                                 Foreground="{DynamicResource AccentBrush}"/>
+                    <TextBlock Text="正在加载项目信息..."
+                               FontSize="13"
+                               Foreground="White"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

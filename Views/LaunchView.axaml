@@ -1,0 +1,552 @@
+<UserControl x:Class="NodePulse.Views.LaunchView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:NodePulse.Controls">
+    <UserControl.Styles>
+        <Style Selector="Border.glassCard">
+            <Setter Property="Background" Value="{DynamicResource SurfacePrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="14"/>
+        </Style>
+
+        <!-- 启动主按钮 -->
+        <Style Selector="Border.launchMainWrap">
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="BoxShadow" Value="0 6 18 0 #404A90E2"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+                    <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2"/>
+                </Transitions>
+            </Setter>
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+        <Style Selector="Border.launchMainWrap:pointerover">
+            <Setter Property="BoxShadow" Value="0 12 28 0 #604A90E2"/>
+            <Setter Property="RenderTransform" Value="translateY(-2px)"/>
+        </Style>
+        <Style Selector="Border.launchMainWrap:pressed">
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+
+        <Style Selector="Button.launchMainBtn">
+            <Setter Property="Height" Value="62"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#4A90E2" Offset="0"/>
+                    <GradientStop Color="#22D3EE" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+        <Style Selector="Button.launchMainBtn:pointerover">
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#5AA0F2" Offset="0"/>
+                    <GradientStop Color="#3EE4FF" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+        <Style Selector="Button.launchMainBtn:disabled">
+            <Setter Property="Opacity" Value="0.45"/>
+            <Setter Property="Cursor" Value="Arrow"/>
+        </Style>
+
+        <!-- 卡片操作按钮 -->
+        <Style Selector="Button.cardBtn">
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondaryBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.cardBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        </Style>
+        <Style Selector="Button.cardBtn:pressed">
+            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+        </Style>
+
+        <Style Selector="Border.versionIconBox">
+            <Setter Property="Width" Value="56"/>
+            <Setter Property="Height" Value="56"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="{DynamicResource InstanceIconBoxBrush}"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+        </Style>
+
+        <Style Selector="Border.pickerCard">
+            <Setter Property="Background" Value="{DynamicResource SurfacePrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="16 14"/>
+            <Setter Property="Margin" Value="0 0 0 10"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+        <Style Selector="Border.pickerCard:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="RenderTransform" Value="translateY(-2px)"/>
+        </Style>
+
+        <Style Selector="Button.pickerSelectBtn">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="20 0"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#4A90E2" Offset="0"/>
+                    <GradientStop Color="#22D3EE" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.pickerSelectBtn:pointerover">
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#5AA0F2" Offset="0"/>
+                    <GradientStop Color="#3EE4FF" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.backBtn">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="14 0"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.backBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Panel>
+
+        <!-- ========== 主启动界面 ========== -->
+        <Grid IsVisible="{Binding !IsPickingInstance}"
+              Background="{DynamicResource OverlayBackgroundBrush}"
+              ClipToBounds="True">
+
+            <Ellipse HorizontalAlignment="Center"
+                     VerticalAlignment="Top"
+                     Width="700" Height="500"
+                     Margin="0 -260 0 0"
+                     IsHitTestVisible="False">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#334A90E2" Offset="0"/>
+                        <GradientStop Color="#004A90E2" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="560"
+                            Spacing="20"
+                            Margin="40 32">
+
+                    <!-- ★ 顶部：标题 + 头像居中 -->
+                    <StackPanel HorizontalAlignment="Center"
+                                Spacing="14"
+                                Margin="0 0 0 8">
+
+                        <!-- 标题：火箭 + 启动 Minecraft -->
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="12"
+                                    HorizontalAlignment="Center">
+                            <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/rocket.png"
+                                                IconSize="36"
+                                                VerticalAlignment="Center"/>
+                            <TextBlock Text="启动 Minecraft"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </StackPanel>
+
+                        <!-- ★ 圆形头像居中 -->
+                        <!-- ★ 方形头像居中 -->
+                        <Border Width="96" Height="96"
+                                CornerRadius="20"
+                                HorizontalAlignment="Center"
+                                BoxShadow="0 10 28 0 #40000000"
+                                ClipToBounds="True">
+                            <Panel>
+                                <!-- 渐变背景（首字母兜底） -->
+                                <Border>
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                            <GradientStop Color="#4A90E2" Offset="0"/>
+                                            <GradientStop Color="#22D3EE" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+
+                                <!-- 首字母 -->
+                                <TextBlock Text="{Binding AccountAvatarInitial}"
+                                           FontSize="44"
+                                           FontWeight="Bold"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding HasNoAccountAvatar}"/>
+
+                                <!-- 真实头像 -->
+                                <Image Source="{Binding AccountAvatarBitmap}"
+                                       Stretch="UniformToFill"
+                                       IsVisible="{Binding HasAccountAvatar}"
+                                       RenderOptions.BitmapInterpolationMode="None"/>
+                            </Panel>
+                        </Border>
+
+                        <!-- 副标题 -->
+                        <TextBlock Text="选择游戏版本，即刻开始你的世界"
+                                   FontSize="13"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                    </StackPanel>
+
+                    <!-- 账户卡片 -->
+                    <Border Classes="glassCard" Padding="16 14">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="当前账户"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Text="{Binding CurrentAccountText}"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 版本卡片 -->
+                    <Border Classes="glassCard" Padding="20 18">
+                        <StackPanel Spacing="16">
+
+                            <!-- 当前选中版本预览 -->
+                            <Grid ColumnDefinitions="Auto,*"
+                                  IsVisible="{Binding HasSelectedVersion}">
+                                <Border Grid.Column="0"
+                                        Classes="versionIconBox"
+                                        Margin="0 0 14 0">
+                                    <Image Source="{Binding SelectedVersionIcon}"
+                                           Width="44" Height="44"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            Spacing="5">
+                                    <TextBlock Text="{Binding SelectedVersion}"
+                                               FontSize="17"
+                                               FontWeight="SemiBold"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="{Binding SelectedVersionSubtitle}"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Border Height="1"
+                                    Background="{DynamicResource BorderSubtleBrush}"
+                                    IsVisible="{Binding HasSelectedVersion}"/>
+
+                            <!-- 两个按钮撑满整个卡片宽度 -->
+                            <Grid ColumnDefinitions="*,12,*">
+                                <Button Grid.Column="0"
+                                        Classes="cardBtn"
+                                        Command="{Binding OpenInstanceSettingsCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                        <PathIcon Data="M19.14,12.94C19.17,13.29 19.19,13.64 19.19,14C19.19,14.36 19.17,14.71 19.14,15.06L21.17,16.64C21.35,16.78 21.4,17.04 21.29,17.24L19.29,20.71C19.18,20.91 18.94,21 18.73,20.94L16.34,19.97C15.85,20.34 15.32,20.65 14.75,20.88L14.39,23.43C14.36,23.66 14.16,23.83 13.93,23.83H9.93C9.7,23.83 9.5,23.66 9.47,23.43L9.11,20.88C8.54,20.65 8.01,20.34 7.52,19.97L5.13,20.94C4.92,21 4.68,20.91 4.57,20.71L2.57,17.24C2.46,17.04 2.51,16.78 2.69,16.64L4.72,15.06C4.69,14.71 4.67,14.36 4.67,14C4.67,13.64 4.69,13.29 4.72,12.94L2.69,11.36C2.51,11.22 2.46,10.96 2.57,10.76L4.57,7.29C4.68,7.09 4.92,7 5.13,7.06L7.52,8.03C8.01,7.66 8.54,7.35 9.11,7.12L9.47,4.57C9.5,4.34 9.7,4.17 9.93,4.17H13.93C14.16,4.17 14.36,4.34 14.39,4.57L14.75,7.12C15.32,7.35 15.85,7.66 16.34,8.03L18.73,7.06C18.94,7 19.18,7.09 19.29,7.29L21.29,10.76C21.4,10.96 21.35,11.22 21.17,11.36L19.14,12.94M11.93,14C11.93,15.66 13.27,17 14.93,17C16.59,17 17.93,15.66 17.93,14C17.93,12.34 16.59,11 14.93,11C13.27,11 11.93,12.34 11.93,14Z"
+                                                  Width="15" Height="15"
+                                                  VerticalAlignment="Center"
+                                                  Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="实例设置"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Grid.Column="2"
+                                        Classes="cardBtn"
+                                        Command="{Binding OpenInstancePickerCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                        <PathIcon Data="M3,3H21V5H3V3M3,7H21V9H3V7M3,11H21V13H3V11M3,15H21V17H3V15M3,19H21V21H3V19Z"
+                                                  Width="15" Height="15"
+                                                  VerticalAlignment="Center"
+                                                  Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="实例选择"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 启动按钮 -->
+                    <Border Classes="launchMainWrap"
+                            Margin="0 4 0 0">
+                        <Button Classes="launchMainBtn"
+                                Command="{Binding LaunchCommand}">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="12"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/play.png"
+                                                    IconSize="22"
+                                                    VerticalAlignment="Center"/>
+                                <TextBlock Text="启动游戏"
+                                           FontSize="18"
+                                           FontWeight="Bold"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Border>
+
+                    <!-- 状态文字 -->
+                    <TextBlock Text="{Binding StatusText}"
+                               FontSize="12"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxWidth="440"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               IsVisible="{Binding !IsLoading}"/>
+
+                    <!-- 进度卡片 -->
+                    <Border Classes="glassCard"
+                            Padding="20 18"
+                            IsVisible="{Binding IsLoading}">
+                        <StackPanel Spacing="12">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{Binding StatusText}"
+                                           FontSize="12"
+                                           TextTrimming="CharacterEllipsis"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding LaunchProgress, StringFormat={}{0:F0}%}"
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Margin="10 0 0 0"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource AccentBrush}"/>
+                            </Grid>
+
+                            <ProgressBar Value="{Binding LaunchProgress}"
+                                         Minimum="0" Maximum="100"
+                                         Height="8"
+                                         CornerRadius="4"
+                                         Background="{DynamicResource SurfaceSecondaryBrush}"
+                                         Foreground="{DynamicResource AccentBrush}"/>
+
+                            <TextBlock Text="{Binding ProgressDetail}"
+                                       FontSize="11"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- ========== 实例选择界面 ========== -->
+        <Grid IsVisible="{Binding IsPickingInstance}"
+              Background="{DynamicResource OverlayBackgroundBrush}"
+              ClipToBounds="True">
+
+            <Grid RowDefinitions="Auto,*" Margin="32 24">
+
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="Auto,*"
+                      Margin="0 0 0 18">
+                    <Button Grid.Column="0"
+                            Classes="backBtn"
+                            Command="{Binding CloseInstancePickerCommand}"
+                            VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"
+                                      Width="14" Height="14"
+                                      Foreground="{DynamicResource TextPrimaryBrush}"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Text="返回" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <StackPanel Grid.Column="1"
+                                Spacing="4"
+                                VerticalAlignment="Center"
+                                Margin="20 0 0 0">
+                        <TextBlock Text="选择游戏实例"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Text="点击任意实例右侧的「选择」按钮即可切换"
+                                   FontSize="12"
+                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                    </StackPanel>
+                </Grid>
+
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto">
+                    <Panel>
+
+                        <ItemsControl ItemsSource="{Binding InstanceItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Classes="pickerCard">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Border Grid.Column="0"
+                                                    Width="48" Height="48"
+                                                    CornerRadius="10"
+                                                    Background="{DynamicResource InstanceIconBoxBrush}"
+                                                    Margin="0 0 14 0"
+                                                    VerticalAlignment="Center"
+                                                    ClipToBounds="True">
+                                                <Border Width="{Binding IconSize}"
+                                                        Height="{Binding IconSize}"
+                                                        CornerRadius="6"
+                                                        ClipToBounds="True"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center">
+                                                    <Image Source="{Binding IconBitmap}"
+                                                           Stretch="UniformToFill"/>
+                                                </Border>
+                                            </Border>
+
+                                            <StackPanel Grid.Column="1"
+                                                        VerticalAlignment="Center"
+                                                        Spacing="4">
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontSize="16"
+                                                           FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                <TextBlock Text="{Binding Subtitle}"
+                                                           FontSize="12"
+                                                           Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            </StackPanel>
+
+                                            <Panel Grid.Column="2"
+                                                   VerticalAlignment="Center"
+                                                   MinWidth="120">
+                                                <Border IsVisible="{Binding IsCurrent}"
+                                                        Background="#2048D68A"
+                                                        BorderBrush="#48D68A"
+                                                        BorderThickness="1"
+                                                        CornerRadius="10"
+                                                        Padding="14 0"
+                                                        Height="36"
+                                                        HorizontalAlignment="Right">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Spacing="6"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                        <PathIcon Data="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
+                                                                  Width="14" Height="14"
+                                                                  Foreground="#48D68A"
+                                                                  VerticalAlignment="Center"/>
+                                                        <TextBlock Text="当前使用中"
+                                                                   FontSize="12"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="#48D68A"
+                                                                   VerticalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <Button IsVisible="{Binding !IsCurrent}"
+                                                        Classes="pickerSelectBtn"
+                                                        HorizontalAlignment="Right"
+                                                        Command="{Binding $parent[UserControl].DataContext.PickInstanceCommand}"
+                                                        CommandParameter="{Binding}">
+                                                    <TextBlock Text="选择"
+                                                               Foreground="White"
+                                                               VerticalAlignment="Center"/>
+                                                </Button>
+                                            </Panel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="14"
+                                    Margin="0 60"
+                                    IsVisible="{Binding IsPickerLoading}">
+                            <ProgressBar IsIndeterminate="True"
+                                         Width="160" Height="4"
+                                         Foreground="{DynamicResource AccentBrush}"
+                                         Background="{DynamicResource SurfaceSecondaryBrush}"/>
+                            <TextBlock Text="正在扫描实例..."
+                                       FontSize="12"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+
+                    </Panel>
+                </ScrollViewer>
+
+            </Grid>
+        </Grid>
+
+    </Panel>
+</UserControl>

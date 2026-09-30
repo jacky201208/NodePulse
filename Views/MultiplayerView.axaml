@@ -1,0 +1,641 @@
+<UserControl x:Class="NodePulse.Views.MultiplayerView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:NodePulse.Controls"
+             x:Name="MultiplayerRoot">
+    <UserControl.Styles>
+        <Style Selector="Button.multiplayerTab">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="Padding" Value="18 8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="72"/>
+            <Setter Property="Margin" Value="2 0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button.multiplayerTab:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+        <Style Selector="Button.multiplayerTab.selected">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{DynamicResource AppWindowBackgroundBrush}">
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Background="{DynamicResource SurfacePrimaryBrush}"
+                    CornerRadius="10"
+                    Padding="6"
+                    Margin="0 0 0 12"
+                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                    BorderThickness="1">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding Tabs}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Classes="multiplayerTab"
+                                        Classes.selected="{Binding IsSelected}"
+                                        Command="{Binding $parent[UserControl].DataContext.SelectTabCommand}"
+                                        CommandParameter="{Binding}">
+                                    <TextBlock Text="{Binding DisplayName}"/>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+
+            <Panel Grid.Row="1">
+
+                <Panel IsVisible="{Binding #MultiplayerRoot.DataContext.IsTerracottaTab}">
+                    <Border IsVisible="{Binding IsStopped}"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="12" Padding="40"
+                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                            BorderThickness="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            MaxWidth="560">
+                        <StackPanel Spacing="20" HorizontalAlignment="Center">
+                            <TextBlock Text="陶瓦联机" FontSize="22" FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="P2P 联机工具，无需服务器。房主保持游戏运行，好友输入邀请码即可加入。"
+                                       FontSize="13" TextWrapping="Wrap" TextAlignment="Center"
+                                       MaxWidth="440"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            <Button Command="{Binding StartCommand}"
+                                    Height="44" Width="200"
+                                    HorizontalAlignment="Center"
+                                    Background="{DynamicResource AccentBrush}"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    CornerRadius="8"
+                                    FontSize="15"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Content="启动联机"/>
+                            <TextBlock Text="{Binding StatusText}" FontSize="12"
+                                       TextWrapping="Wrap" TextAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Text="{Binding ErrorText}" FontSize="12"
+                                       TextWrapping="Wrap" TextAlignment="Center"
+                                       Foreground="#E88A8A"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid IsVisible="{Binding IsIdle}" RowDefinitions="Auto,*">
+                        <TextBlock Grid.Row="0" Text="请选择模式" FontSize="18"
+                                   FontWeight="SemiBold" Margin="0 0 0 20"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <StackPanel Grid.Row="1" Spacing="16" VerticalAlignment="Top">
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="12" Padding="24"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="14">
+                                    <StackPanel Orientation="Horizontal" Spacing="14">
+                                        <!-- 👑 保留 emoji -->
+                                        <TextBlock Text="👑" FontSize="36" VerticalAlignment="Center"/>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="我想当房主" FontSize="17"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                            <TextBlock Text="创建房间，生成邀请码分享给好友"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button Command="{Binding BeHostCommand}"
+                                            Height="40"
+                                            HorizontalAlignment="Stretch"
+                                            Background="{DynamicResource ButtonSuccessBrush}"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            CornerRadius="6"
+                                            FontSize="14"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Content="创建房间"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="12" Padding="24"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="14">
+                                    <StackPanel Orientation="Horizontal" Spacing="14">
+                                        <!-- 👥 保留 emoji -->
+                                        <TextBlock Text="👥" FontSize="36" VerticalAlignment="Center"/>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="我想当房客" FontSize="17"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                            <TextBlock Text="输入房主提供的邀请码加入游戏"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBox Grid.Column="0"
+                                                 Text="{Binding InputRoomCode}"
+                                                 Watermark="输入邀请码"
+                                                 Height="40"
+                                                 Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                 Foreground="{DynamicResource TextPrimaryBrush}"
+                                                 BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                 BorderThickness="1"
+                                                 CornerRadius="6"
+                                                 Padding="14 0"
+                                                 FontSize="14"
+                                                 VerticalContentAlignment="Center"/>
+                                        <Button Grid.Column="1"
+                                                Command="{Binding BeGuestCommand}"
+                                                Width="90" Height="40"
+                                                Margin="8 0 0 0"
+                                                Background="{DynamicResource AccentBrush}"
+                                                Foreground="White"
+                                                BorderThickness="0"
+                                                CornerRadius="6"
+                                                FontSize="14"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                Content="加入"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Text="{Binding StatusText}" FontSize="12"
+                                       Foreground="{DynamicResource TextMutedBrush}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0 8 0 0"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border IsVisible="{Binding IsBusy}"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="12" Padding="40"
+                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                            BorderThickness="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            MaxWidth="560">
+                        <StackPanel Spacing="20" HorizontalAlignment="Center">
+                            <ProgressBar IsIndeterminate="True"
+                                         Width="300" Height="6"
+                                         Background="{DynamicResource SurfaceSecondaryBrush}"
+                                         Foreground="{DynamicResource AccentBrush}"/>
+                            <TextBlock Text="{Binding StatusText}" FontSize="14"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border IsVisible="{Binding IsHostReady}"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="12" Padding="40"
+                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                            BorderThickness="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            MaxWidth="560">
+                        <StackPanel Spacing="20">
+                            <StackPanel Orientation="Horizontal" Spacing="10"
+                                        HorizontalAlignment="Center">
+                                <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/success.png"
+                                                    IconSize="22"
+                                                    VerticalAlignment="Center"/>
+                                <TextBlock Text="房间已创建" FontSize="20" FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource ButtonSuccessBrush}"/>
+                            </StackPanel>
+                            <TextBlock Text="把下面的邀请码发给好友" FontSize="13"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            <Grid ColumnDefinitions="*,Auto" Margin="0 8">
+                                <Border Grid.Column="0"
+                                        Background="{DynamicResource TextBoxBackgroundBrush}"
+                                        CornerRadius="6" Padding="16 12"
+                                        BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                        BorderThickness="1">
+                                    <SelectableTextBlock Text="{Binding RoomCode}"
+                                                         FontSize="18" FontWeight="SemiBold"
+                                                         LetterSpacing="2"
+                                                         Foreground="{DynamicResource AccentBrush}"
+                                                         HorizontalAlignment="Center"/>
+                                </Border>
+                                <Button Grid.Column="1"
+                                        Click="OnCopyRoomClick"
+                                        Width="80" Height="44"
+                                        Margin="8 0 0 0"
+                                        Background="{DynamicResource AccentBrush}"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        CornerRadius="6"
+                                        FontSize="14"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Content="复制"/>
+                            </Grid>
+                            <TextBlock Text="等待好友加入后，即可进入游戏开始联机"
+                                       FontSize="12" TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                            <Button Command="{Binding BackToIdleCommand}"
+                                    Height="40" Width="120"
+                                    HorizontalAlignment="Center"
+                                    Background="{DynamicResource ButtonSecondaryBrush}"
+                                    Foreground="{DynamicResource TextPrimaryBrush}"
+                                    BorderThickness="0"
+                                    CornerRadius="6"
+                                    FontSize="14"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Content="返回"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border IsVisible="{Binding IsGuestReady}"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="12" Padding="40"
+                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                            BorderThickness="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            MaxWidth="560">
+                        <StackPanel Spacing="20">
+                            <StackPanel Orientation="Horizontal" Spacing="10"
+                                        HorizontalAlignment="Center">
+                                <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/success.png"
+                                                    IconSize="22"
+                                                    VerticalAlignment="Center"/>
+                                <TextBlock Text="已连接房主" FontSize="20" FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource ButtonSuccessBrush}"/>
+                            </StackPanel>
+                            <TextBlock Text="现在可以进入游戏，点击多人游戏加入房主的局域网世界"
+                                       FontSize="13" TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            <Button Command="{Binding BackToIdleCommand}"
+                                    Height="40" Width="120"
+                                    HorizontalAlignment="Center"
+                                    Background="{DynamicResource ButtonSecondaryBrush}"
+                                    Foreground="{DynamicResource TextPrimaryBrush}"
+                                    BorderThickness="0"
+                                    CornerRadius="6"
+                                    FontSize="14"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Content="断开连接"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border IsVisible="{Binding HasError}"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="12" Padding="40"
+                            BorderBrush="#7A3030" BorderThickness="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            MaxWidth="560">
+                        <StackPanel Spacing="20">
+                            <StackPanel Orientation="Horizontal" Spacing="10"
+                                        HorizontalAlignment="Center">
+                                <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/warning.png"
+                                                    IconSize="22"
+                                                    VerticalAlignment="Center"/>
+                                <TextBlock Text="联机出现错误" FontSize="20"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Foreground="#E88A8A"/>
+                            </StackPanel>
+                            <TextBlock Text="可能是网络环境不支持 P2P，或邀请码无效。"
+                                       FontSize="13" TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            <Button Command="{Binding BackToIdleCommand}"
+                                    Height="40" Width="120"
+                                    HorizontalAlignment="Center"
+                                    Background="{DynamicResource ButtonSecondaryBrush}"
+                                    Foreground="{DynamicResource TextPrimaryBrush}"
+                                    BorderThickness="0"
+                                    CornerRadius="6"
+                                    FontSize="14"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Content="返回"/>
+                        </StackPanel>
+                    </Border>
+                </Panel>
+
+                <Panel IsVisible="{Binding #MultiplayerRoot.DataContext.IsLinkerTab}">
+
+                    <Border IsVisible="{Binding LinkerNeedsDownload}"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="12" Padding="40"
+                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                            BorderThickness="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            MaxWidth="600">
+                        <StackPanel Spacing="18" HorizontalAlignment="Center">
+                            <TextBlock Text="Linker 联机" FontSize="22"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+
+                            <TextBlock Text="基于 .NET 8 的 P2P 异地组网工具。为减小启动器体积，Linker 组件需单独下载。"
+                                       FontSize="13" TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       MaxWidth="480"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                            <Border Background="{DynamicResource SurfaceSecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="16 12"
+                                    MaxWidth="480"
+                                    BorderBrush="{DynamicResource BorderSubtleBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="6">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/package.png"
+                                                            IconSize="14"
+                                                            VerticalAlignment="Center"/>
+                                        <TextBlock Text="自动下载"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    </StackPanel>
+                                    <TextBlock Text="将根据当前系统自动下载对应版本并解压到 .NodePulse/linker/"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                    <TextBlock Text="{Binding LinkerStatus}"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextLinkBrush}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="12"
+                                        HorizontalAlignment="Center">
+                                <Button Command="{Binding LinkerDownloadCommand}"
+                                        Height="44" Width="170"
+                                        Background="{DynamicResource AccentBrush}"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        CornerRadius="8"
+                                        FontSize="15"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Content="一键下载 Linker"
+                                        IsEnabled="{Binding !LinkerIsDownloading}"/>
+                                <Button Command="{Binding LinkerOpenFolderCommand}"
+                                        Height="44" Width="170"
+                                        Background="{DynamicResource ButtonSecondaryBrush}"
+                                        Foreground="{DynamicResource TextPrimaryBrush}"
+                                        BorderThickness="0"
+                                        CornerRadius="8"
+                                        FontSize="15"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Content="打开 Linker 目录"/>
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding LinkerError}" FontSize="12"
+                                       TextWrapping="Wrap" TextAlignment="Center"
+                                       MaxWidth="480"
+                                       Foreground="#E88A8A"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border IsVisible="{Binding LinkerIsDownloading}"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="12" Padding="40"
+                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                            BorderThickness="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            MaxWidth="560">
+                        <StackPanel Spacing="20" HorizontalAlignment="Center">
+                            <TextBlock Text="正在下载 Linker..." FontSize="18"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <ProgressBar Value="{Binding LinkerDownloadProgress}"
+                                         Minimum="0" Maximum="100"
+                                         Width="360" Height="8"
+                                         Background="{DynamicResource SurfaceSecondaryBrush}"
+                                         Foreground="{DynamicResource AccentBrush}"/>
+                            <TextBlock Text="{Binding LinkerDownloadProgress, StringFormat='{}{0:F0}%'}"
+                                       FontSize="14"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="{Binding LinkerStatus}" FontSize="12"
+                                       TextWrapping="Wrap" TextAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border IsVisible="{Binding LinkerCanStart}"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="12" Padding="40"
+                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                            BorderThickness="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            MaxWidth="600">
+                        <StackPanel Spacing="18" HorizontalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" Spacing="10"
+                                        HorizontalAlignment="Center">
+                                <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/success.png"
+                                                    IconSize="24"
+                                                    VerticalAlignment="Center"/>
+                                <TextBlock Text="Linker 已就绪" FontSize="22"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource ButtonSuccessBrush}"/>
+                            </StackPanel>
+
+                            <TextBlock Text="组件已下载完成。点击下方按钮启动，启动后会弹出 UAC 对话框，请点击「是」。"
+                                       FontSize="13" TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       MaxWidth="480"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="12"
+                                        HorizontalAlignment="Center">
+                                <Button Command="{Binding LinkerStartCommand}"
+                                        Height="44" Width="170"
+                                        Background="{DynamicResource AccentBrush}"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        CornerRadius="8"
+                                        FontSize="15"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Content="启动 Linker"
+                                        IsEnabled="{Binding !LinkerIsBusy}"/>
+                                <Button Command="{Binding LinkerOpenFolderCommand}"
+                                        Height="44" Width="170"
+                                        Background="{DynamicResource ButtonSecondaryBrush}"
+                                        Foreground="{DynamicResource TextPrimaryBrush}"
+                                        BorderThickness="0"
+                                        CornerRadius="8"
+                                        FontSize="15"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Content="打开 Linker 目录"/>
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding LinkerStatus}" FontSize="12"
+                                       TextWrapping="Wrap" TextAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Text="{Binding LinkerError}" FontSize="12"
+                                       TextWrapping="Wrap" TextAlignment="Center"
+                                       MaxWidth="480"
+                                       Foreground="#E88A8A"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ScrollViewer IsVisible="{Binding LinkerIsRunning}"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                CornerRadius="12" Padding="36"
+                                BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                BorderThickness="1"
+                                VerticalAlignment="Center" HorizontalAlignment="Center"
+                                MaxWidth="640"
+                                Margin="0 8">
+                            <StackPanel Spacing="20">
+
+                                <StackPanel Orientation="Horizontal" Spacing="10"
+                                            HorizontalAlignment="Center">
+                                    <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/success.png"
+                                                        IconSize="22"
+                                                        VerticalAlignment="Center"/>
+                                    <TextBlock Text="Linker 已启动" FontSize="20"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"
+                                               Foreground="{DynamicResource ButtonSuccessBrush}"/>
+                                </StackPanel>
+
+                                <TextBlock Text="Linker 已在本机启动。请在浏览器中完成组网配置。"
+                                           FontSize="13" TextWrapping="Wrap"
+                                           TextAlignment="Center"
+                                           Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                                <Border Background="{DynamicResource TextBoxBackgroundBrush}"
+                                        CornerRadius="6" Padding="16 12"
+                                        BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                        BorderThickness="1">
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="管理界面地址" FontSize="11"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"/>
+                                        <SelectableTextBlock Text="{Binding LinkerWebUrl}"
+                                                             FontSize="15"
+                                                             FontWeight="SemiBold"
+                                                             Foreground="{DynamicResource AccentBrush}"
+                                                             HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <StackPanel Orientation="Horizontal" Spacing="10"
+                                            HorizontalAlignment="Center">
+                                    <Button Command="{Binding LinkerOpenWebUiCommand}"
+                                            Height="40" Width="130"
+                                            Background="{DynamicResource AccentBrush}"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            CornerRadius="8"
+                                            FontSize="14"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Content="打开管理界面"/>
+
+                                    <Button Command="{Binding LinkerRestartCommand}"
+                                            Height="40" Width="120"
+                                            Background="#8A6FB0"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            CornerRadius="8"
+                                            FontSize="14"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Content="重启 Linker"
+                                            IsEnabled="{Binding !LinkerIsBusy}"/>
+
+                                    <Button Command="{Binding LinkerStopCommand}"
+                                            Height="40" Width="100"
+                                            Background="{DynamicResource ButtonSecondaryBrush}"
+                                            Foreground="{DynamicResource TextPrimaryBrush}"
+                                            BorderThickness="0"
+                                            CornerRadius="8"
+                                            FontSize="14"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Content="停止"/>
+                                </StackPanel>
+
+                                <TextBlock Text="{Binding LinkerStatus}" FontSize="12"
+                                           TextWrapping="Wrap" TextAlignment="Center"
+                                           Foreground="{DynamicResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding LinkerError}" FontSize="12"
+                                           TextWrapping="Wrap" TextAlignment="Center"
+                                           MaxWidth="480"
+                                           Foreground="#E88A8A"/>
+
+                                <Border Background="{DynamicResource SurfaceSecondaryBrush}"
+                                        CornerRadius="10"
+                                        Padding="18 16"
+                                        BorderBrush="{DynamicResource AccentBrush}"
+                                        BorderThickness="1"
+                                        Margin="0 8 0 0">
+                                    <StackPanel Spacing="10">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/pin.png"
+                                                                IconSize="16"
+                                                                VerticalAlignment="Center"/>
+                                            <TextBlock Text="首次使用 / 打不开界面时的排查步骤"
+                                                       FontSize="14"
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+
+                                        <TextBlock TextWrapping="Wrap"
+                                                   FontSize="12"
+                                                   LineHeight="20"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}">
+<Run Text="1. " FontWeight="SemiBold"/><Run Text="浏览器如果显示 404 或空白页，属于正常现象——Linker 客户端首次启动需要初始化。"/>
+<LineBreak/>
+<Run Text="2. " FontWeight="SemiBold"/><Run Text="点击「重启 Linker」，等待进程重启后，再点「打开管理界面」。"/>
+<LineBreak/>
+<Run Text="3. " FontWeight="SemiBold"/><Run Text="在管理界面里选择「客户端模式」，填写或使用默认信标服务器，并设置分组 ID 和密码（同一分组才能互相发现）。"/>
+<LineBreak/>
+<Run Text="4. " FontWeight="SemiBold"/><Run Text="提交后管理界面即可正常加载。之后就不再需要初始化，直接使用即可。"/>
+<LineBreak/>
+<Run Text="5. " FontWeight="SemiBold"/><Run Text="如果重启仍然不行，点击「打开 Linker 目录」，检查 configs/common.json 里 Modes 是否为 [&quot;client&quot;]。"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+
+                            </StackPanel>
+                        </Border>
+                    </ScrollViewer>
+                </Panel>
+            </Panel>
+        </Grid>
+    </Grid>
+</UserControl>

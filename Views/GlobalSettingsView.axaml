@@ -1,0 +1,853 @@
+<UserControl x:Class="NodePulse.Views.GlobalSettingsView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="SettingsRoot">
+    <UserControl.Styles>
+        <Style Selector="Button.settingsTab">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="Padding" Value="16 8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="72"/>
+            <Setter Property="Margin" Value="2 0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button.settingsTab:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        </Style>
+        <Style Selector="Button.settingsTab:pressed">
+            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+        </Style>
+        <Style Selector="Button.settingsTab.selected">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="Button.settingsTab.selected:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="Button.settingsTab Border.tabIcon">
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="Background" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="Button.settingsTab:pointerover Border.tabIcon">
+            <Setter Property="Background" Value="{DynamicResource TextPrimaryBrush}"/>
+        </Style>
+
+        <Style Selector="Button.settingsTab.selected Border.tabIcon">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style Selector="Button.settingsTab.selected:pointerover Border.tabIcon">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style Selector="Button.settingsTab TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="Button.toolBtn">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        </Style>
+        <Style Selector="Button.toolBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.accentBtn">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.accentBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.themeOption">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondaryBrush}"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        </Style>
+        <Style Selector="Button.themeOption:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+        <Style Selector="Button.themeOption.active">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="Button.themeOption.active:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.themeOption.active TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="TextBlock.groupTitle">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="Margin" Value="2 4 0 8"/>
+        </Style>
+
+        <Style Selector="TextBlock.rowLabel">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="Border.iconTitle">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{DynamicResource TextPrimaryBrush}"/>
+        </Style>
+        <Style Selector="Border.iconButton">
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{DynamicResource TextPrimaryBrush}"/>
+        </Style>
+        <Style Selector="Border.iconButtonWhite">
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style Selector="ListBox.javaList">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style Selector="ListBox.javaList ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0 0 0 8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="ListBox.javaList ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.javaList ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.javaList ListBoxItem:selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{DynamicResource AppWindowBackgroundBrush}">
+        <Grid Margin="24" RowDefinitions="Auto,Auto,*,Auto">
+
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        Margin="0 0 0 16">
+                <Border Classes="iconTitle">
+                    <Border.OpacityMask>
+                        <ImageBrush Source="avares://NodePulse/Assets/Icons/settings.png"
+                                    Stretch="Uniform"/>
+                    </Border.OpacityMask>
+                </Border>
+                <TextBlock Text="设置"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextLinkBrush}"/>
+            </StackPanel>
+
+            <Border Grid.Row="1"
+                    Background="{DynamicResource SurfacePrimaryBrush}"
+                    CornerRadius="10"
+                    Padding="6"
+                    Margin="0 0 0 16"
+                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                    BorderThickness="1">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding Tabs}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Classes="settingsTab"
+                                        Classes.selected="{Binding IsSelected}"
+                                        Command="{Binding $parent[UserControl].DataContext.SelectTabCommand}"
+                                        CommandParameter="{Binding}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border Classes="tabIcon">
+                                            <Border.OpacityMask>
+                                                <ImageBrush Source="{Binding IconBitmap}"
+                                                            Stretch="Uniform"/>
+                                            </Border.OpacityMask>
+                                        </Border>
+                                        <TextBlock Text="{Binding DisplayName}"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+
+            <Panel Grid.Row="2">
+
+                <!-- ============ 通用 ============ -->
+                <ScrollViewer IsVisible="{Binding IsGeneralTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="20">
+                        <StackPanel>
+                            <TextBlock Text="Minecraft 目录" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="12">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBox Text="{Binding McFolder}"
+                                                 Watermark="Minecraft 目录路径"
+                                                 Height="38"
+                                                 VerticalContentAlignment="Center"
+                                                 Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                 Foreground="{DynamicResource TextPrimaryBrush}"
+                                                 BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                 CornerRadius="6"/>
+                                        <Button Grid.Column="1"
+                                                Classes="accentBtn"
+                                                Content="浏览..."
+                                                Command="{Binding BrowseMcFolderCommand}"
+                                                Width="90" Height="38"
+                                                Margin="8 0 0 0"/>
+                                    </Grid>
+                                    <TextBlock Text="默认: 启动器目录下的 .minecraft (绿色版)"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="启动器日志" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="启动器数据目录"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                    <TextBox Text="{Binding LauncherDataDir}"
+                                             IsReadOnly="True"
+                                             Height="38"
+                                             VerticalContentAlignment="Center"
+                                             Background="{DynamicResource TextBoxBackgroundBrush}"
+                                             Foreground="{DynamicResource TextPrimaryBrush}"
+                                             BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                             CornerRadius="6"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <Button Content="打开目录"
+                                                Classes="toolBtn"
+                                                Command="{Binding OpenLauncherDirCommand}"
+                                                Width="100" Height="34"/>
+                                        <Button Content="清理日志"
+                                                Classes="toolBtn"
+                                                Command="{Binding ClearLogsCommand}"
+                                                Width="100" Height="34"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- ★ 新增：缓存管理 -->
+                        <StackPanel>
+                            <TextBlock Text="缓存管理" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="12">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="4">
+                                            <TextBlock Text="当前缓存大小"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            <TextBlock Text="{Binding CacheSizeText}"
+                                                       FontSize="18"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource AccentBrush}"/>
+                                        </StackPanel>
+                                        <Button Grid.Column="1"
+                                                Classes="toolBtn"
+                                                Content="刷新"
+                                                Command="{Binding RefreshCacheSizeCommand}"
+                                                Width="80" Height="34"
+                                                VerticalAlignment="Center"/>
+                                    </Grid>
+
+                                    <TextBlock Text="缓存包含 Modrinth 项目 / 版本信息、Java 扫描结果、版本清单。清理后首次加载会稍慢，不影响游戏和实例。"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <Button Content="打开缓存目录"
+                                                Classes="toolBtn"
+                                                Command="{Binding OpenCacheFolderCommand}"
+                                                Width="120" Height="34"/>
+                                        <Button Content="清理缓存"
+                                                Command="{Binding ClearCacheCommand}"
+                                                Width="120" Height="34"
+                                                Padding="0"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                BorderThickness="0"
+                                                CornerRadius="6"
+                                                FontSize="13"
+                                                Background="{DynamicResource ButtonDangerBrush}"
+                                                Foreground="White"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- ============ 下载 ============ -->
+                <ScrollViewer IsVisible="{Binding IsDownloadTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="20">
+                        <StackPanel>
+                            <TextBlock Text="下载设置" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="18">
+                                    <Grid ColumnDefinitions="*,240">
+                                        <TextBlock Text="游戏下载源" Classes="rowLabel"/>
+                                        <ComboBox Grid.Column="1"
+                                                  ItemsSource="{Binding DownloadSources}"
+                                                  SelectedItem="{Binding SelectedDownloadSource}"
+                                                  Height="36"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalContentAlignment="Center"
+                                                  Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                  Foreground="{DynamicResource TextPrimaryBrush}"
+                                                  BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                  CornerRadius="6"/>
+                                    </Grid>
+
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="最大下载线程" Classes="rowLabel"/>
+                                        <Grid ColumnDefinitions="*,60">
+                                            <Slider Grid.Column="0"
+                                                    Value="{Binding DownloadThreadCount}"
+                                                    Minimum="1"
+                                                    Maximum="256"
+                                                    VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding DownloadThreadCount}"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Right"
+                                                       FontSize="14"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <Grid ColumnDefinitions="*,200,60">
+                                        <TextBlock Text="限制下载速度" Classes="rowLabel"/>
+                                        <TextBox Grid.Column="1"
+                                                 Text="{Binding LimitDownloadSpeed}"
+                                                 Height="36"
+                                                 VerticalContentAlignment="Center"
+                                                 HorizontalContentAlignment="Right"
+                                                 Padding="10 0"
+                                                 Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                 Foreground="{DynamicResource TextPrimaryBrush}"
+                                                 BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                 CornerRadius="6"/>
+                                        <TextBlock Grid.Column="2"
+                                                   Text="MB/s"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                    </Grid>
+                                    <TextBlock Text="0 表示不限速"
+                                               FontSize="11"
+                                               Margin="0 -8 0 0"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- ============ 语言 ============ -->
+                <ScrollViewer IsVisible="{Binding IsLanguageTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="20">
+
+                        <StackPanel>
+                            <TextBlock Text="游戏语言" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="14">
+                                    <Grid ColumnDefinitions="*,240">
+                                        <TextBlock Text="启动后游戏内语言" Classes="rowLabel"/>
+                                        <ComboBox Grid.Column="1"
+                                                  ItemsSource="{Binding GameLanguageOptions}"
+                                                  SelectedItem="{Binding SelectedGameLanguage}"
+                                                  Height="36"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalContentAlignment="Center"
+                                                  Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                  Foreground="{DynamicResource TextPrimaryBrush}"
+                                                  BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                  CornerRadius="6"/>
+                                    </Grid>
+                                    <TextBlock Text="选择后，每次启动游戏会自动修改 options.txt 中的 lang 字段。"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- ============ 启动和内存 ============ -->
+                <ScrollViewer IsVisible="{Binding IsLaunchMemoryTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="20">
+                        <StackPanel>
+                            <TextBlock Text="启动设置" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="14">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="启动前检查文件完整性" Classes="rowLabel"/>
+                                        <ToggleSwitch Grid.Column="1"
+                                                      IsChecked="{Binding CheckFileIntegrity}"
+                                                      OnContent="" OffContent=""/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="缺失文件自动补全" Classes="rowLabel"/>
+                                        <ToggleSwitch Grid.Column="1"
+                                                      IsChecked="{Binding AutoRepairMissing}"
+                                                      OnContent="" OffContent=""/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="启动后最小化启动器" Classes="rowLabel"/>
+                                        <ToggleSwitch Grid.Column="1"
+                                                      IsChecked="{Binding MinimizeOnLaunch}"
+                                                      OnContent="" OffContent=""/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="全屏启动" Classes="rowLabel"/>
+                                        <ToggleSwitch Grid.Column="1"
+                                                      IsChecked="{Binding FullscreenLaunch}"
+                                                      OnContent="" OffContent=""/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,240">
+                                        <TextBlock Text="启动后自动加入服务器" Classes="rowLabel"/>
+                                        <TextBox Grid.Column="1"
+                                                 Text="{Binding AutoJoinServer}"
+                                                 Watermark="留空则不自动加入"
+                                                 Height="36"
+                                                 VerticalContentAlignment="Center"
+                                                 Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                 Foreground="{DynamicResource TextPrimaryBrush}"
+                                                 BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                 CornerRadius="6"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="内存" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="14">
+                                    <Grid ColumnDefinitions="*,240">
+                                        <TextBlock Text="内存设置模式" Classes="rowLabel"/>
+                                        <ComboBox Grid.Column="1"
+                                                  ItemsSource="{Binding MemoryModes}"
+                                                  SelectedItem="{Binding SelectedMemoryMode}"
+                                                  Height="36"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalContentAlignment="Center"
+                                                  Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                  Foreground="{DynamicResource TextPrimaryBrush}"
+                                                  BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                  CornerRadius="6"/>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          IsVisible="{Binding IsAutoMemoryMode}">
+                                        <TextBlock Text="当前可用内存/系统最大内存" Classes="rowLabel"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding SystemMemoryInfo}"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          IsVisible="{Binding IsAutoMemoryMode}">
+                                        <TextBlock Text="自动分配" Classes="rowLabel"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding AutoMemoryText}"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource AccentBrush}"/>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="*,16,*"
+                                          IsVisible="{Binding IsManualMemoryMode}">
+                                        <StackPanel Grid.Column="0" Spacing="6">
+                                            <TextBlock Text="最大内存 (MB)"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            <TextBox Text="{Binding MaxMemory}"
+                                                     Height="36"
+                                                     VerticalContentAlignment="Center"
+                                                     Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                     Foreground="{DynamicResource TextPrimaryBrush}"
+                                                     BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                     CornerRadius="6"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Spacing="6">
+                                            <TextBlock Text="最小内存 (MB)"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            <TextBox Text="{Binding MinMemory}"
+                                                     Height="36"
+                                                     VerticalContentAlignment="Center"
+                                                     Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                     Foreground="{DynamicResource TextPrimaryBrush}"
+                                                     BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                     CornerRadius="6"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- ============ Java ============ -->
+                <ScrollViewer IsVisible="{Binding IsJavaTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="20">
+                        <StackPanel>
+                            <TextBlock Text="Java" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="14">
+                                    <Grid ColumnDefinitions="*,240">
+                                        <TextBlock Text="Java 选择" Classes="rowLabel"/>
+                                        <ComboBox Grid.Column="1"
+                                                  ItemsSource="{Binding JavaSelectionModes}"
+                                                  SelectedItem="{Binding SelectedJavaMode}"
+                                                  Height="36"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalContentAlignment="Center"
+                                                  Background="{DynamicResource TextBoxBackgroundBrush}"
+                                                  Foreground="{DynamicResource TextPrimaryBrush}"
+                                                  BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                                  CornerRadius="6"/>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="*,Auto,Auto">
+                                        <TextBlock Text="Java 列表" Classes="rowLabel"/>
+                                        <Button Grid.Column="1"
+                                                Classes="toolBtn"
+                                                Content="刷新"
+                                                Command="{Binding RefreshJavaListCommand}"
+                                                Width="80" Height="32"
+                                                Margin="8 0 0 0"/>
+                                        <Button Grid.Column="2"
+                                                Classes="accentBtn"
+                                                Content="导入"
+                                                Command="{Binding BrowseJavaCommand}"
+                                                Width="80" Height="32"
+                                                Margin="8 0 0 0"/>
+                                    </Grid>
+
+                                    <ListBox Classes="javaList"
+                                             ItemsSource="{Binding JavaList}"
+                                             SelectedItem="{Binding SelectedJava}"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             Padding="0">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{DynamicResource SurfaceSecondaryBrush}"
+                                                        CornerRadius="8"
+                                                        Padding="14 12"
+                                                        BorderBrush="{DynamicResource BorderSubtleBrush}"
+                                                        BorderThickness="1">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <StackPanel Grid.Column="0"
+                                                                    Spacing="4">
+                                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                                <TextBlock Text="{Binding MajorVersion, StringFormat='Java {0}'}"
+                                                                           FontSize="14"
+                                                                           FontWeight="SemiBold"
+                                                                           Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                                <TextBlock Text="{Binding FullVersion}"
+                                                                           FontSize="12"
+                                                                           VerticalAlignment="Center"
+                                                                           Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                                            </StackPanel>
+                                                            <TextBlock Text="{Binding JavaPath}"
+                                                                       FontSize="11"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="x64"
+                                                                   FontSize="11"
+                                                                   VerticalAlignment="Center"
+                                                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- ============ 主题 ============ -->
+                <ScrollViewer IsVisible="{Binding IsThemeTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="20">
+                        <StackPanel>
+                            <TextBlock Text="主题" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="12">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <Button Classes="themeOption"
+                                                Classes.active="{Binding IsDarkTheme}"
+                                                Command="{Binding SetDarkThemeCommand}"
+                                                Content="深色"/>
+                                        <Button Classes="themeOption"
+                                                Classes.active="{Binding IsLightTheme}"
+                                                Command="{Binding SetLightThemeCommand}"
+                                                Content="浅色"/>
+                                    </StackPanel>
+                                    <TextBlock Text="切换后立即生效并自动保存。"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- ============ 帮助与反馈 ============ -->
+                <ScrollViewer IsVisible="{Binding IsHelpTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="20">
+                        <StackPanel>
+                            <TextBlock Text="关于" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{Binding AppVersion}"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="{Binding AppAuthor}"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                    <TextBlock Text="基于 .NET 8 / Avalonia 的《我的世界》Java 版第三方启动器"
+                                               FontSize="12"
+                                               TextWrapping="Wrap"
+                                               Margin="0 6 0 0"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="反馈与建议" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Text="遇到问题时，欢迎通过以下渠道反馈："
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                                    <Button Command="{Binding OpenUrlCommand}"
+                                            CommandParameter=""
+                                            IsEnabled="False"
+                                            HorizontalAlignment="Left"
+                                            Width="180" Height="36"
+                                            Padding="0"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Background="{DynamicResource AccentBrush}"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            CornerRadius="6"
+                                            FontSize="13"
+                                            Opacity="0.5">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Border Classes="iconButtonWhite">
+                                                <Border.OpacityMask>
+                                                    <ImageBrush Source="avares://NodePulse/Assets/Icons/Settings/github.png"
+                                                                Stretch="Uniform"/>
+                                                </Border.OpacityMask>
+                                            </Border>
+                                            <TextBlock Text="项目主页（尚未公开）"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="White"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button Command="{Binding OpenUrlCommand}"
+                                            CommandParameter=""
+                                            IsEnabled="False"
+                                            HorizontalAlignment="Left"
+                                            Width="180" Height="36"
+                                            Padding="0"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Background="{DynamicResource SurfaceSecondaryBrush}"
+                                            Foreground="{DynamicResource TextPrimaryBrush}"
+                                            BorderBrush="{DynamicResource BorderSecondaryBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            FontSize="13"
+                                            Opacity="0.5">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Border Classes="iconButton">
+                                                <Border.OpacityMask>
+                                                    <ImageBrush Source="avares://NodePulse/Assets/Icons/Settings/issue.png"
+                                                                Stretch="Uniform"/>
+                                                </Border.OpacityMask>
+                                            </Border>
+                                            <TextBlock Text="提交 Issue（尚未开放）"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <TextBlock Text="项目尚未开源，反馈渠道暂时不可用。"
+                                               FontSize="11"
+                                               Margin="0 4 0 0"
+                                               Foreground="{DynamicResource TextMutedBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="日志文件" Classes="groupTitle"/>
+                            <Border Background="{DynamicResource SurfacePrimaryBrush}"
+                                    CornerRadius="8" Padding="16"
+                                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="反馈问题时，请附上下面的日志文件："
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                    <TextBlock FontSize="11"
+                                               TextWrapping="Wrap"
+                                               LineHeight="18"
+                                               Foreground="{DynamicResource TextMutedBrush}">
+<Run Text="· 启动器目录\mc-latest.log"/>
+<LineBreak/>
+<Run Text="· 启动器目录\last_launch_args.txt"/>
+<LineBreak/>
+<Run Text="· 启动器目录\failed_downloads.txt"/>
+<LineBreak/>
+<Run Text="· 游戏目录\logs\latest.log"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Panel>
+
+            <Grid Grid.Row="3" ColumnDefinitions="Auto,*" Margin="0 16 0 0">
+                <Button Grid.Column="0"
+                        Content="保存"
+                        Command="{Binding SaveCommand}"
+                        Width="120" Height="40"
+                        Padding="0"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Background="{DynamicResource ButtonSuccessBrush}"
+                        Foreground="{DynamicResource TextOnAccentBrush}"
+                        BorderThickness="0"
+                        CornerRadius="6"
+                        FontSize="14"/>
+                <TextBlock Grid.Column="1"
+                           Text="{Binding StatusText}"
+                           VerticalAlignment="Center"
+                           Margin="14 0 0 0"
+                           Foreground="{DynamicResource TextLinkBrush}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

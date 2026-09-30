@@ -1,0 +1,452 @@
+<UserControl x:Class="NodePulse.Views.AccountView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:NodePulse.Views"
+             xmlns:controls="clr-namespace:NodePulse.Controls">
+    <UserControl.Styles>
+        <!-- 翻页圆按钮 -->
+        <Style Selector="Button.pageNavBtn">
+            <Setter Property="Width" Value="52"/>
+            <Setter Property="Height" Value="52"/>
+            <Setter Property="CornerRadius" Value="26"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.pageNavBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="RenderTransform" Value="scale(1.08)"/>
+        </Style>
+        <Style Selector="Button.pageNavBtn:pointerover PathIcon">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.pageNavBtn:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.96)"/>
+        </Style>
+        <Style Selector="Button.pageNavBtn:disabled">
+            <Setter Property="Opacity" Value="0.25"/>
+            <Setter Property="Cursor" Value="Arrow"/>
+        </Style>
+        <Style Selector="Button.pageNavBtn PathIcon">
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- 可点击卡片 -->
+        <Style Selector="Border.clickableCard">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="0:0:0.18"
+                                                   Easing="CubicEaseOut"/>
+                    <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2"/>
+                </Transitions>
+            </Setter>
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Border.clickableCard:pointerover">
+            <Setter Property="RenderTransform" Value="translateY(-3px)"/>
+            <Setter Property="BoxShadow" Value="0 16 40 0 #60000000"/>
+        </Style>
+        <Style Selector="Border.clickableCard:pressed">
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+
+        <!-- 卡片底部操作按钮 -->
+        <Style Selector="Button.cardActionBtn">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="18 0"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.cardActionBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.cardActionBtn.accent">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.cardActionBtn.accent:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.cardActionBtn.danger">
+            <Setter Property="Background" Value="{DynamicResource ButtonDangerBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.cardActionBtn.danger:pointerover">
+            <Setter Property="Background" Value="#B84455"/>
+        </Style>
+
+        <!-- 底部添加按钮 -->
+        <Style Selector="Button.addBtn">
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="Padding" Value="24 0"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.addBtn:pointerover">
+            <Setter Property="RenderTransform" Value="translateY(-2px)"/>
+        </Style>
+        <Style Selector="Button.addBtn:pressed">
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+
+        <Style Selector="Button.addBtn.offline">
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#10B981" Offset="0"/>
+                    <GradientStop Color="#34D399" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="Button.addBtn.yggdrasil">
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#4A90E2" Offset="0"/>
+                    <GradientStop Color="#22D3EE" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Panel>
+
+        <!-- ========== 卡片浏览模式 ========== -->
+        <Grid IsVisible="{Binding !IsDetailView}"
+              Background="{DynamicResource OverlayBackgroundBrush}"
+              ClipToBounds="True">
+
+            <Ellipse HorizontalAlignment="Center"
+                     VerticalAlignment="Top"
+                     Width="700" Height="500"
+                     Margin="0 -240 0 0"
+                     IsHitTestVisible="False">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#22A78BFA" Offset="0"/>
+                        <GradientStop Color="#00A78BFA" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+
+            <Grid RowDefinitions="Auto,*,Auto" Margin="32 24">
+
+                <!-- 顶部标题 -->
+                <StackPanel Grid.Row="0" Spacing="6" Margin="0 0 0 14">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/user.png"
+                                            IconSize="26"
+                                            VerticalAlignment="Center"/>
+                        <TextBlock Text="账户管理"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextLinkBrush}"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding StatusText}"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </StackPanel>
+
+                <!-- 中间：卡片 + 翻页按钮 -->
+                <Grid Grid.Row="1">
+
+                    <!-- 卡片主体 -->
+                    <Border Classes="clickableCard"
+                            MaxWidth="440"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="18"
+                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                            BorderThickness="1"
+                            BoxShadow="0 12 32 0 #40000000"
+                            Padding="32 30"
+                            PointerPressed="OnCardPointerPressed"
+                            IsVisible="{Binding HasAccounts}">
+                        <StackPanel Spacing="20">
+
+                            <!-- 大头像 -->
+                            <Border Width="120" Height="120"
+                                    CornerRadius="24"
+                                    HorizontalAlignment="Center"
+                                    BoxShadow="0 10 28 0 #40000000"
+                                    ClipToBounds="True">
+                                <Panel>
+                                    <Border>
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                <GradientStop Color="#4A90E2" Offset="0"/>
+                                                <GradientStop Color="#22D3EE" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                    </Border>
+
+                                    <TextBlock Text="{Binding CardAvatarInitial}"
+                                               FontSize="56"
+                                               FontWeight="Bold"
+                                               Foreground="White"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               IsVisible="{Binding CardHasNoAvatar}"/>
+
+                                    <Image Source="{Binding CardAvatarBitmap}"
+                                           Stretch="UniformToFill"
+                                           IsVisible="{Binding CardHasAvatar}"
+                                           RenderOptions.BitmapInterpolationMode="None"/>
+                                </Panel>
+                            </Border>
+
+                            <!-- 用户名 + 类型 -->
+                            <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding CardUsername}"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxWidth="320"
+                                           Foreground="{DynamicResource TextPrimaryBrush}"/>
+
+                                <Border Background="{DynamicResource SurfaceSecondaryBrush}"
+                                        CornerRadius="8"
+                                        Padding="12 5"
+                                        HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding CardTypeLabel}"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- "当前使用中" 标记 -->
+                            <Border IsVisible="{Binding CardIsActive}"
+                                    Background="#2048D68A"
+                                    BorderBrush="#48D68A"
+                                    BorderThickness="1"
+                                    CornerRadius="20"
+                                    Padding="14 6"
+                                    HorizontalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" Spacing="7">
+                                    <Ellipse Width="7" Height="7"
+                                             Fill="#48D68A"
+                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="当前使用中"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="#48D68A"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Height="1"
+                                    Background="{DynamicResource BorderSubtleBrush}"
+                                    Margin="0 4"/>
+
+                            <!-- UUID -->
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="UUID"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextMutedBrush}"/>
+                                <SelectableTextBlock Text="{Binding CardUuidText}"
+                                                     FontSize="12"
+                                                     FontFamily="Consolas,Menlo,monospace"
+                                                     TextWrapping="Wrap"
+                                                     Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 空状态 -->
+                    <Border MaxWidth="440"
+                            MinHeight="360"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="{DynamicResource SurfacePrimaryBrush}"
+                            CornerRadius="18"
+                            BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                            BorderThickness="1"
+                            BoxShadow="0 12 32 0 #40000000"
+                            Padding="32"
+                            IsVisible="{Binding HasNoAccounts}">
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Spacing="16">
+                            <Border Width="88" Height="88"
+                                    CornerRadius="44"
+                                    Background="{DynamicResource SurfaceSecondaryBrush}"
+                                    HorizontalAlignment="Center">
+                                <controls:EmojiIcon IconSource="avares://NodePulse/Assets/Icons/Emoji/user.png"
+                                                    IconSize="40"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="还没有账户"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="点击下方按钮添加一个"
+                                       FontSize="12"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 上一页 -->
+                    <Button Classes="pageNavBtn"
+                            Command="{Binding PrevCommand}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="8 0 0 0">
+                        <PathIcon Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"/>
+                    </Button>
+
+                    <!-- 下一页 -->
+                    <Button Classes="pageNavBtn"
+                            Command="{Binding NextCommand}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0 0 8 0">
+                        <PathIcon Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                    </Button>
+
+                </Grid>
+
+                <!-- 底部操作区 -->
+                <StackPanel Grid.Row="2" Spacing="12" Margin="0 14 0 0">
+
+                    <TextBlock Text="{Binding CurrentIndexText}"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               IsVisible="{Binding HasAccounts}"
+                               Foreground="{DynamicResource TextMutedBrush}"/>
+
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="10"
+                                HorizontalAlignment="Center"
+                                IsVisible="{Binding HasAccounts}">
+                        <Button Classes="cardActionBtn accent"
+                                Command="{Binding SetCurrentCommand}"
+                                IsVisible="{Binding CardIsNotActive}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Data="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
+                                          Width="14" Height="14"
+                                          Foreground="White"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="设为当前"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Classes="cardActionBtn"
+                                Command="{Binding ChangeProfileCommand}"
+                                IsVisible="{Binding CardIsYggdrasil}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+                                          Width="14" Height="14"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="切换角色"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Classes="cardActionBtn danger"
+                                Command="{Binding RemoveCurrentCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                                          Width="14" Height="14"
+                                          Foreground="White"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="删除"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="12"
+                                HorizontalAlignment="Center">
+                        <Button Classes="addBtn offline"
+                                Command="{Binding AddOfflineCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <PathIcon Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                                          Width="16" Height="16"
+                                          Foreground="White"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="离线账户"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Classes="addBtn yggdrasil"
+                                Command="{Binding AddYggdrasilCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <PathIcon Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                                          Width="16" Height="16"
+                                          Foreground="White"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="外置登录"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Grid>
+        </Grid>
+
+        <!-- ========== 详情模式 ========== -->
+        <views:AccountDetailView IsVisible="{Binding IsDetailView}"/>
+
+    </Panel>
+</UserControl>

@@ -1,0 +1,74 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.ThemeDictionaries>
+        <!-- ==================== 深色主题 ==================== -->
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="AppWindowBackgroundBrush" Color="#1E1C30"/>
+            <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="#4A90E2"/>
+            <SolidColorBrush x:Key="TitleBarForegroundBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#272440"/>
+            <SolidColorBrush x:Key="SurfacePrimaryBrush" Color="#19182B"/>
+            <SolidColorBrush x:Key="SurfaceSecondaryBrush" Color="#2A2840"/>
+            <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#383458"/>
+            <SolidColorBrush x:Key="SurfacePressedBrush" Color="#443F6E"/>
+            <SolidColorBrush x:Key="BorderPrimaryBrush" Color="#2A2840"/>
+            <SolidColorBrush x:Key="BorderSecondaryBrush" Color="#2E2C4A"/>
+            <SolidColorBrush x:Key="BorderSubtleBrush" Color="#333150"/>
+            <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E2E2F2"/>
+            <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A9A9C2"/>
+            <SolidColorBrush x:Key="TextMutedBrush" Color="#8888A0"/>
+            <SolidColorBrush x:Key="TextLinkBrush" Color="#93B8FF"/>
+            <SolidColorBrush x:Key="TextOnAccentBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="AccentBrush" Color="#4A90E2"/>
+            <SolidColorBrush x:Key="AccentHoverBrush" Color="#5AA0F2"/>
+            <SolidColorBrush x:Key="ButtonSecondaryBrush" Color="#3A365C"/>
+            <SolidColorBrush x:Key="ButtonSuccessBrush" Color="#589958"/>
+            <SolidColorBrush x:Key="ButtonSuccessDarkBrush" Color="#486B54"/>
+            <SolidColorBrush x:Key="ButtonDangerBrush" Color="#D15468"/>
+            <SolidColorBrush x:Key="ButtonWarningBrush" Color="#E8A33D"/>
+            <SolidColorBrush x:Key="TextBoxBackgroundBrush" Color="#121120"/>
+            <SolidColorBrush x:Key="SeparatorBrush" Color="#3A365C"/>
+            <SolidColorBrush x:Key="ToastBackgroundBrush" Color="#2A2840"/>
+            <SolidColorBrush x:Key="ToastBorderBrush" Color="#4A90E2"/>
+            <SolidColorBrush x:Key="OverlayBackgroundBrush" Color="#222038"/>
+
+            <!-- ★ 实例图标方框背景（深色模式下深蓝） -->
+            <SolidColorBrush x:Key="InstanceIconBoxBrush" Color="#1A3A5C"/>
+        </ResourceDictionary>
+
+        <!-- ==================== 浅色主题 ==================== -->
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="AppWindowBackgroundBrush" Color="#F5F6FA"/>
+            <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="#4A90E2"/>
+            <SolidColorBrush x:Key="TitleBarForegroundBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#ECEEF5"/>
+            <SolidColorBrush x:Key="SurfacePrimaryBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="SurfaceSecondaryBrush" Color="#F0F2F8"/>
+            <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#E4E7F0"/>
+            <SolidColorBrush x:Key="SurfacePressedBrush" Color="#D5D9E8"/>
+            <SolidColorBrush x:Key="BorderPrimaryBrush" Color="#D5D9E8"/>
+            <SolidColorBrush x:Key="BorderSecondaryBrush" Color="#D5D9E8"/>
+            <SolidColorBrush x:Key="BorderSubtleBrush" Color="#E0E3EC"/>
+            <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1A1D2E"/>
+            <SolidColorBrush x:Key="TextSecondaryBrush" Color="#5A5F7A"/>
+            <SolidColorBrush x:Key="TextMutedBrush" Color="#8888A0"/>
+            <SolidColorBrush x:Key="TextLinkBrush" Color="#2F6BBF"/>
+            <SolidColorBrush x:Key="TextOnAccentBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="AccentBrush" Color="#4A90E2"/>
+            <SolidColorBrush x:Key="AccentHoverBrush" Color="#5AA0F2"/>
+            <SolidColorBrush x:Key="ButtonSecondaryBrush" Color="#D5D9E8"/>
+            <SolidColorBrush x:Key="ButtonSuccessBrush" Color="#4E9A4E"/>
+            <SolidColorBrush x:Key="ButtonSuccessDarkBrush" Color="#3D8B3D"/>
+            <SolidColorBrush x:Key="ButtonDangerBrush" Color="#C94F61"/>
+            <SolidColorBrush x:Key="ButtonWarningBrush" Color="#D18A28"/>
+            <SolidColorBrush x:Key="TextBoxBackgroundBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="SeparatorBrush" Color="#D5D9E8"/>
+            <SolidColorBrush x:Key="ToastBackgroundBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="ToastBorderBrush" Color="#4A90E2"/>
+            <SolidColorBrush x:Key="OverlayBackgroundBrush" Color="#F5F6FA"/>
+
+            <!-- ★ 实例图标方框背景（浅色模式下浅蓝） -->
+            <SolidColorBrush x:Key="InstanceIconBoxBrush" Color="#D0E8FF"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

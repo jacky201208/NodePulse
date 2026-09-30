@@ -1,0 +1,383 @@
+<UserControl x:Class="NodePulse.Views.AccountDetailView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Styles>
+        <Style Selector="Button.backBtn">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="12 0"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.backBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.actionBtn">
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style Selector="Button.actionBtn.primary">
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#4A90E2" Offset="0"/>
+                    <GradientStop Color="#22D3EE" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="Button.actionBtn.secondary">
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondaryBrush}"/>
+        </Style>
+        <Style Selector="Button.actionBtn.secondary:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.actionBtn.danger">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#E5484D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#4A2226"/>
+        </Style>
+        <Style Selector="Button.actionBtn.danger:pointerover">
+            <Setter Property="Background" Value="#2A161A"/>
+        </Style>
+
+        <Style Selector="Button.miniBtn">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="14 0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondaryBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.miniBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+
+        <Style Selector="Button.iconBtn">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondaryBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.iconBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+        </Style>
+        <Style Selector="Button.iconBtn PathIcon">
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="Height" Value="16"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="32 20 32 24">
+
+        <!-- ============ 顶部 ============ -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0 0 0 20">
+            <Button Grid.Column="0"
+                    Classes="backBtn"
+                    Command="{Binding CloseDetailCommand}"
+                    VerticalAlignment="Top"
+                    Margin="0 4 0 0">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <PathIcon Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"
+                              Width="14" Height="14"
+                              Foreground="{DynamicResource TextPrimaryBrush}"
+                              VerticalAlignment="Center"/>
+                    <TextBlock Text="返回" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <StackPanel Grid.Column="1"
+                        Spacing="4"
+                        VerticalAlignment="Center"
+                        Margin="20 0 0 0">
+                <TextBlock Text="{Binding DetailUsername}"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           Foreground="{DynamicResource TextPrimaryBrush}"/>
+                <TextBlock Text="{Binding DetailSubtitle}"
+                           FontSize="13"
+                           Foreground="{DynamicResource TextMutedBrush}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ============ UUID ============ -->
+        <StackPanel Grid.Row="1" Spacing="8" Margin="0 0 0 18">
+            <TextBlock Text="UUID"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+            <Grid ColumnDefinitions="*,10,Auto">
+                <Border Grid.Column="0"
+                        Background="{DynamicResource SurfacePrimaryBrush}"
+                        BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="16 12"
+                        VerticalAlignment="Center">
+                    <SelectableTextBlock Text="{Binding DetailUuid}"
+                                         FontSize="13"
+                                         FontFamily="Consolas,Menlo,monospace"
+                                         TextTrimming="CharacterEllipsis"
+                                         Foreground="{DynamicResource TextPrimaryBrush}"/>
+                </Border>
+                <Button Grid.Column="2"
+                        Classes="iconBtn"
+                        Name="CopyUuidBtn"
+                        Click="OnCopyUuidClick">
+                    <PathIcon Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+                </Button>
+            </Grid>
+        </StackPanel>
+
+        <!-- ============ 皮肤 / 披风 ============ -->
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*,16,*"
+              Margin="0 0 0 18">
+
+            <!-- 左：皮肤 -->
+            <Border Grid.Column="0"
+                    Background="{DynamicResource SurfacePrimaryBrush}"
+                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    ClipToBounds="True">
+                <Grid RowDefinitions="Auto,*">
+
+                    <!-- ★ 标题栏：StackPanel 承载按钮（隐藏不留空） -->
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="16 12 12 0">
+                        <TextBlock Grid.Column="0"
+                                   Text="皮肤"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <StackPanel Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    Spacing="6">
+                            <!-- 导入皮肤（仅离线 / 微软显示） -->
+                            <Button Classes="miniBtn"
+                                    Command="{Binding ImportSkinCommand}"
+                                    Content="导入皮肤"
+                                    IsVisible="{Binding DetailCanImportSkin}"/>
+                            <!-- 切换皮肤（全部账户显示） -->
+                            <Button Classes="miniBtn"
+                                    Command="{Binding ManageSkinsCommand}"
+                                    Content="{Binding DetailManageButtonText}"/>
+                            <Button Classes="miniBtn"
+                                    Command="{Binding RefreshSkinCommand}"
+                                    Content="刷新"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <Border>
+                            <Border.Background>
+                                <RadialGradientBrush Center="50%,40%" RadiusX="55%" RadiusY="60%">
+                                    <GradientStop Color="#254A90E2" Offset="0"/>
+                                    <GradientStop Color="#00000000" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Border.Background>
+                        </Border>
+
+                        <Image Source="{Binding AvatarBitmap}"
+                               Stretch="Uniform"
+                               Margin="20"
+                               IsVisible="{Binding HasAvatar}"
+                               RenderOptions.BitmapInterpolationMode="None"/>
+
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Spacing="10"
+                                    IsVisible="{Binding ShowAvatarError}">
+                            <TextBlock Text="皮肤加载失败"
+                                       FontSize="13"
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            <TextBlock Text="{Binding AvatarErrorMessage}"
+                                       FontSize="11"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       MaxWidth="220"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Spacing="10"
+                                    IsVisible="{Binding IsAvatarLoading}">
+                            <ProgressBar IsIndeterminate="True"
+                                         Width="100" Height="4"
+                                         Foreground="{DynamicResource AccentBrush}"
+                                         Background="{DynamicResource SurfaceSecondaryBrush}"/>
+                            <TextBlock Text="加载中..."
+                                       FontSize="11"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- 右：披风 -->
+            <Border Grid.Column="2"
+                    Background="{DynamicResource SurfacePrimaryBrush}"
+                    BorderBrush="{DynamicResource BorderPrimaryBrush}"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    ClipToBounds="True">
+                <Grid RowDefinitions="Auto,*">
+                    <TextBlock Grid.Row="0"
+                               Text="披风"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Margin="16 12 12 0"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                    <Grid Grid.Row="1">
+                        <Border>
+                            <Border.Background>
+                                <RadialGradientBrush Center="50%,40%" RadiusX="55%" RadiusY="60%">
+                                    <GradientStop Color="#25A78BFA" Offset="0"/>
+                                    <GradientStop Color="#00000000" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Border.Background>
+                        </Border>
+
+                        <Image Source="{Binding CapeBitmap}"
+                               Stretch="Uniform"
+                               Margin="20"
+                               IsVisible="{Binding HasCape}"
+                               RenderOptions.BitmapInterpolationMode="None"/>
+
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Spacing="10"
+                                    IsVisible="{Binding HasNoCape}">
+                            <Border Width="64" Height="64"
+                                    CornerRadius="16"
+                                    Background="{DynamicResource SurfaceSecondaryBrush}"
+                                    HorizontalAlignment="Center">
+                                <PathIcon Data="M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V4A2,2 0 0,0 18,2H6M6,4H18V20H6V4Z"
+                                          Width="28" Height="28"
+                                          Foreground="{DynamicResource TextMutedBrush}"/>
+                            </Border>
+                            <TextBlock Text="该角色没有披风"
+                                       FontSize="12"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ============ 底部按钮 ============ -->
+        <Grid Grid.Row="3" ColumnDefinitions="*,10,*">
+            <Panel Grid.Column="0">
+                <Button Classes="actionBtn primary"
+                        Command="{Binding DetailSetCurrentCommand}"
+                        IsVisible="{Binding DetailIsNotCurrent}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
+                                  Width="16" Height="16"
+                                  Foreground="White"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="切换到此账户"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Border IsVisible="{Binding DetailIsCurrent}"
+                        Background="#2048D68A"
+                        BorderBrush="#48D68A"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Height="48">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <PathIcon Data="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
+                                  Width="16" Height="16"
+                                  Foreground="#48D68A"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="当前使用中"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="#48D68A"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Panel>
+
+            <Button Grid.Column="2"
+                    Classes="actionBtn secondary"
+                    Command="{Binding ChangeDetailProfileCommand}"
+                    IsVisible="{Binding DetailIsYggdrasil}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <PathIcon Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+                              Width="16" Height="16"
+                              VerticalAlignment="Center"/>
+                    <TextBlock Text="切换角色"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <Button Grid.Column="2"
+                    Classes="actionBtn danger"
+                    Command="{Binding RemoveDetailCommand}"
+                    IsVisible="{Binding !DetailIsYggdrasil}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <PathIcon Data="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"
+                              Width="16" Height="16"
+                              Foreground="#E5484D"
+                              VerticalAlignment="Center"/>
+                    <TextBlock Text="登出"
+                               Foreground="#E5484D"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+    </Grid>
+</UserControl>
