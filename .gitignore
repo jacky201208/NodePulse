@@ -37,6 +37,9 @@ failed_downloads.txt
 accounts.json
 global-settings.json
 
+# 本地私密信息备份（含正版登录 ClientId，绝不提交）
+local-secrets.md
+
 # ==================== 系统文件 ====================
 Thumbs.db
 Desktop.ini
