@@ -10,8 +10,14 @@ namespace NodePulse.Services
     /// <summary>微软正版账户 OAuth 设备码登录。</summary>
     public static partial class MicrosoftAuth
     {
-        // 由用户提供的 Azure 应用 Client ID（已获得 Minecraft/Xbox 相关权限）。
-        public const string ClientId = "NODEPULSE_AZURE_CLIENT_ID_FROM_ENV";
+        /// <summary>
+        /// 微软正版登录所需的 Azure 应用 Client ID。
+        /// 出于安全考虑，源码不内置任何正式 Client ID。
+        /// 使用方需通过环境变量 NODEPULSE_AZURE_CLIENT_ID 提供自己的
+        /// Azure 应用（已获得 Minecraft/Xbox 相关权限）Client ID。
+        /// </summary>
+        public static string ClientId =>
+            Environment.GetEnvironmentVariable("NODEPULSE_AZURE_CLIENT_ID") ?? "";
 
         private const string MsaAuthorizeBase =
             "https://login.microsoftonline.com/consumers/oauth2/v2.0";
@@ -34,6 +40,9 @@ namespace NodePulse.Services
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(ClientId))
+                    return (null, "未配置微软登录 Client ID，请设置环境变量 NODEPULSE_AZURE_CLIENT_ID");
+
                 var form = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     { "client_id", ClientId },
