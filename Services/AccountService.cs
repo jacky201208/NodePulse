@@ -60,5 +60,23 @@ namespace NodePulse.Services
             return store.Accounts.FirstOrDefault(a => a.Id == store.CurrentAccountId)
                    ?? store.Accounts[0];
         }
+
+        /// <summary>获取全部账号列表。</summary>
+        public static List<Account> GetAll()
+        {
+            return Load().Accounts;
+        }
+
+        /// <summary>将指定账号设为当前账号。</summary>
+        public static bool SetCurrent(string accountId)
+        {
+            var store = Load();
+            if (!store.Accounts.Any(a => a.Id == accountId))
+                return false;
+
+            store.CurrentAccountId = accountId;
+            Save(store);
+            return true;
+        }
     }
 }

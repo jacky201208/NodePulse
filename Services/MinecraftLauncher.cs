@@ -207,6 +207,7 @@ namespace NodePulse.Services
                 ? account!.AccessToken
                 : "0";
             string userType = account?.UserType ?? "legacy";
+            bool isMicrosoft = account?.AccountType == "microsoft";
 
             var vars = new Dictionary<string, string>
             {
@@ -216,7 +217,7 @@ namespace NodePulse.Services
                 {"${auth_player_name}", playerName},
                 {"${auth_uuid}", playerUuid},
                 {"${auth_access_token}", accessToken},
-                {"${clientid}", ""},
+                {"${clientid}", isMicrosoft ? MicrosoftAuth.ClientId : ""},
                 {"${auth_xuid}", ""},
                 {"${user_type}", userType},
                 {"${version_name}", versionId},

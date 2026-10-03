@@ -2,12 +2,14 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using NodePulse.Models;
 using NodePulse.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NodePulse.Services
@@ -260,6 +262,46 @@ namespace NodePulse.Services
         public string GetPendingApiRoot() => _pendingApiRoot;
         public string GetPendingUsername() => _pendingUsername;
         public string GetPendingPassword() => _pendingPassword;
+
+        public async Task<MicrosoftLoginResult?> ShowMicrosoftLoginAsync()
+        {
+            // 1. 请求设备码
+            var (device, codeError) = await MicrosoftAuth.RequestDeviceCodeAsync();
+            if (device == null)
+            {
+                await ShowMessageAsync("登录失败", codeError ?? "无法获取设备码");
+                return null;
+            }
+
+            // 2. 弹授权窗口
+            var window = new DeviceCodeDialog(device.VerificationUri, device.UserCode);
+            using var cts = new CancellationTokenSource();
+            window.Cancelled += () => cts.Cancel();
+
+            var pollTask = Task.Run(async () =>
+                await MicrosoftAuth.PollAndLoginAsync(device, cts.Token));
+
+            // 轮询结束（成功/失败/取消）时自动关闭授权窗口
+            _ = pollTask.ContinueWith(_ =>
+            {
+                try { Dispatcher.UIThread.Post(() => window.Close()); }
+                catch { }
+            });
+
+            await window.ShowDialog(_mainWindow);
+            var (login, error, cancelled) = await pollTask;
+
+            if (login != null)
+                return login;
+
+            if (cancelled && string.IsNullOrEmpty(error))
+                return null;
+
+            if (!string.IsNullOrEmpty(error))
+                await ShowMessageAsync("登录失败", error);
+
+            return null;
+        }
 
         public async Task<ProfileInfo?> ShowProfileSelectAsync(string title, List<ProfileInfo> profiles)
         {

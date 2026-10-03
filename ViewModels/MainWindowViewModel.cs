@@ -1,61 +1,36 @@
 using System;
 using System.Windows.Input;
+using NodePulse.Helpers;
 using NodePulse.Services;
+using NodePulse.Views;
 
 namespace NodePulse.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        private readonly IDialogService _dialogService;
+        /// <summary>页面切换请求，由 MainWindow 订阅后执行实际跳转。</summary>
+        public event Action<string>? NavigationRequested;
 
-        private object? _currentView;
-        public object? CurrentView
-        {
-            get => _currentView;
-            set => SetProperty(ref _currentView, value);
-        }
-
+        /// <summary>导航命令。</summary>
         public ICommand GoLaunchPageCommand { get; }
         public ICommand GoDownloadPageCommand { get; }
         public ICommand GoInstancePageCommand { get; }
         public ICommand GoSettingsPageCommand { get; }
         public ICommand GoGlobalSettingsPageCommand { get; }
         public ICommand GoAccountPageCommand { get; }
+        public ICommand GoMultiplayerPageCommand { get; }
+        public ICommand GoAboutPageCommand { get; }
 
         public MainWindowViewModel(IDialogService dialogService)
         {
-            _dialogService = dialogService;
-
-            GoLaunchPageCommand = new RelayCommand(() => { });
-            GoDownloadPageCommand = new RelayCommand(() => { });
-            GoInstancePageCommand = new RelayCommand(() => { });
-            GoSettingsPageCommand = new RelayCommand(() => { });
-            GoGlobalSettingsPageCommand = new RelayCommand(() => { });
-            GoAccountPageCommand = new RelayCommand(() => { });
+            GoLaunchPageCommand = new RelayCommand(() => NavigationRequested?.Invoke(nameof(LaunchView)));
+            GoDownloadPageCommand = new RelayCommand(() => NavigationRequested?.Invoke(nameof(DownloadView)));
+            GoInstancePageCommand = new RelayCommand(() => NavigationRequested?.Invoke(nameof(InstanceView)));
+            GoSettingsPageCommand = new RelayCommand(() => NavigationRequested?.Invoke(nameof(SettingsView)));
+            GoGlobalSettingsPageCommand = new RelayCommand(() => NavigationRequested?.Invoke(nameof(GlobalSettingsView)));
+            GoAccountPageCommand = new RelayCommand(() => NavigationRequested?.Invoke(nameof(AccountView)));
+            GoMultiplayerPageCommand = new RelayCommand(() => NavigationRequested?.Invoke(nameof(MultiplayerView)));
+            GoAboutPageCommand = new RelayCommand(() => NavigationRequested?.Invoke(nameof(AboutView)));
         }
-    }
-
-    // 简易内置 RelayCommand
-    public class RelayCommand : ICommand
-    {
-        private readonly Action _execute;
-        private readonly Func<bool>? _canExecute;
-
-        public RelayCommand(Action execute, Func<bool>? canExecute = null)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-        }
-
-        public event EventHandler? CanExecuteChanged;
-
-        public bool CanExecute(object? parameter)
-            => _canExecute?.Invoke() ?? true;
-
-        public void Execute(object? parameter)
-            => _execute();
-
-        public void RaiseCanExecuteChanged()
-            => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

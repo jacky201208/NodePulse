@@ -79,22 +79,6 @@
             <Setter Property="BoxShadow" Value="0 5 14 0 #40000000"/>
         </Style>
 
-        <Style Selector="Button.toolBtn">
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
-        <Style Selector="Button.toolBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
-        </Style>
-        <Style Selector="Button.toolBtn:pressed">
-            <Setter Property="Background" Value="#3A80D2"/>
-        </Style>
     </UserControl.Styles>
 
     <Grid Background="{DynamicResource AppWindowBackgroundBrush}">

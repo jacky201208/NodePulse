@@ -138,6 +138,22 @@ namespace NodePulse.ViewModels
             set { _currentAccountText = value; OnPropertyChanged(); }
         }
 
+        // ================================================================
+        // 一键切换账号
+        // ================================================================
+
+        public ObservableCollection<Account> AllAccounts { get; } = new();
+
+        private bool _isAccountPickerOpen;
+        public bool IsAccountPickerOpen
+        {
+            get => _isAccountPickerOpen;
+            set { _isAccountPickerOpen = value; OnPropertyChanged(); }
+        }
+
+        public RelayCommand OpenAccountPickerCommand { get; }
+        public RelayCommand<Account> SwitchAccountCommand { get; }
+
         // 首字母（加载失败时的兜底）
         private string _accountAvatarInitial = "?";
         public string AccountAvatarInitial
@@ -207,6 +223,8 @@ namespace NodePulse.ViewModels
             OpenInstancePickerCommand = new RelayCommand(() => _ = OpenInstancePickerAsync());
             CloseInstancePickerCommand = new RelayCommand(CloseInstancePicker);
             PickInstanceCommand = new RelayCommand<LaunchInstanceItem>(PickInstance);
+            OpenAccountPickerCommand = new RelayCommand(OpenAccountPicker);
+            SwitchAccountCommand = new RelayCommand<Account>(SwitchAccount);
         }
 
         public async Task LoadDataAsync()
@@ -229,6 +247,8 @@ namespace NodePulse.ViewModels
                 SelectedVersion = InstalledVersions[0];
             }
 
+            LoadAccounts();
+
             var account = AccountService.GetCurrent();
             CurrentAccountText = account?.DisplayText ?? "未选择账户（请在【账户】页面添加）";
             AccountAvatarInitial = GetInitial(account?.Username);
@@ -241,6 +261,43 @@ namespace NodePulse.ViewModels
                 ? "没有已安装的游戏版本"
                 : $"共 {InstalledVersions.Count} 个已安装版本";
             IsLoading = false;
+        }
+
+        // ================================================================
+// 一键切换账号
+// ================================================================
+
+        private void LoadAccounts()
+        {
+            AllAccounts.Clear();
+            foreach (var a in AccountService.GetAll())
+                AllAccounts.Add(a);
+        }
+
+        private void OpenAccountPicker()
+        {
+            LoadAccounts();
+            IsAccountPickerOpen = !IsAccountPickerOpen;
+        }
+
+        private void SwitchAccount(Account? acc)
+        {
+            if (acc == null) return;
+
+            if (!AccountService.SetCurrent(acc.Id))
+                return;
+
+            IsAccountPickerOpen = false;
+            LoadAccounts();
+
+            CurrentAccountText = acc.DisplayText;
+            AccountAvatarInitial = GetInitial(acc.Username);
+
+            // 切换后立即刷新头像
+            AccountAvatarBitmap = null;
+            _ = LoadAccountAvatarAsync(acc);
+
+            StatusText = $"已切换到账号：{acc.Username}";
         }
 
         private static string GetInitial(string? name)

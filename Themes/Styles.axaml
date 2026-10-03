@@ -71,4 +71,24 @@
             <SolidColorBrush x:Key="InstanceIconBoxBrush" Color="#D0E8FF"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
+
+    <!-- ★ 全局统一按钮渐变（与“启动游戏”按钮一致的蓝→青风格） -->
+    <LinearGradientBrush x:Key="BtnGradientBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#4A90E2" Offset="0"/>
+        <GradientStop Color="#22D3EE" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="BtnGradientHoverBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#5AA0F2" Offset="0"/>
+        <GradientStop Color="#3EE4FF" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- ★ 危险操作按钮渐变（红→橘，用于清理缓存等警示性操作） -->
+    <LinearGradientBrush x:Key="BtnDangerGradientBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#E0553F" Offset="0"/>
+        <GradientStop Color="#EF8E2C" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="BtnDangerGradientHoverBrush" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#F0664A" Offset="0"/>
+        <GradientStop Color="#F5A53F" Offset="1"/>
+    </LinearGradientBrush>
 </ResourceDictionary>

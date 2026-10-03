@@ -55,14 +55,14 @@
             <Setter Property="FocusAdorner" Value="{x:Null}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Background" Value="#3A365C"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientBrush}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
         <Style Selector="Button.closeBtn:pointerover">
-            <Setter Property="Background" Value="#484270"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
     </Window.Styles>
 

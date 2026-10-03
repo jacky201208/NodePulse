@@ -13,6 +13,9 @@ namespace NodePulse.Services
         Task<string?> ShowTextInputAsync(string title, string label, string defaultValue = "");
         Task<YggdrasilLoginResult?> ShowYggdrasilLoginAsync();
 
+        /// <summary>弹微软授权窗口并完成登录。返回 null 表示用户取消或失败。</summary>
+        Task<MicrosoftLoginResult?> ShowMicrosoftLoginAsync();
+
         Task<ProfileInfo?> ShowProfileSelectAsync(string title, List<ProfileInfo> profiles);
 
         Task<string?> ShowSaveFileAsync(

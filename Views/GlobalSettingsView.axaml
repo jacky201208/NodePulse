@@ -56,34 +56,6 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
-        <Style Selector="Button.toolBtn">
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-        </Style>
-        <Style Selector="Button.toolBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
-        </Style>
-
-        <Style Selector="Button.accentBtn">
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
-        <Style Selector="Button.accentBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
-        </Style>
-
         <Style Selector="Button.themeOption">
             <Setter Property="Padding" Value="0"/>
             <Setter Property="MinWidth" Value="120"/>
@@ -334,14 +306,14 @@
                                         <Button Content="清理缓存"
                                                 Command="{Binding ClearCacheCommand}"
                                                 Width="120" Height="34"
+                                                Background="{StaticResource BtnDangerGradientBrush}"
+                                                Foreground="White"
+                                                BorderThickness="0"
+                                                CornerRadius="10"
+                                                FontSize="13"
                                                 Padding="0"
                                                 HorizontalContentAlignment="Center"
-                                                VerticalContentAlignment="Center"
-                                                BorderThickness="0"
-                                                CornerRadius="6"
-                                                FontSize="13"
-                                                Background="{DynamicResource ButtonDangerBrush}"
-                                                Foreground="White"/>
+                                                VerticalContentAlignment="Center"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
@@ -833,15 +805,8 @@
                 <Button Grid.Column="0"
                         Content="保存"
                         Command="{Binding SaveCommand}"
-                        Width="120" Height="40"
-                        Padding="0"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="{DynamicResource ButtonSuccessBrush}"
-                        Foreground="{DynamicResource TextOnAccentBrush}"
-                        BorderThickness="0"
-                        CornerRadius="6"
-                        FontSize="14"/>
+                        Classes="accentBtn"
+                        Width="120" Height="40"/>
                 <TextBlock Grid.Column="1"
                            Text="{Binding StatusText}"
                            VerticalAlignment="Center"

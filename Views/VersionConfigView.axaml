@@ -31,20 +31,18 @@
         </Style>
 
         <Style Selector="Button.startBtn">
-            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientBrush}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="22"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
-
         <Style Selector="Button.startBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
-
         <Style Selector="Button.startBtn:pressed">
-            <Setter Property="Background" Value="#3A80D2"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
 
         <Style Selector="ComboBox.versionBox">
@@ -69,23 +67,6 @@
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
 
-        <Style Selector="Button.backCircleBtn">
-            <Setter Property="Width" Value="42"/>
-            <Setter Property="Height" Value="42"/>
-            <Setter Property="CornerRadius" Value="21"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Background" Value="{DynamicResource ButtonSecondaryBrush}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style Selector="Button.backCircleBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
-        </Style>
-        <Style Selector="Button.backCircleBtn:pressed">
-            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
-        </Style>
     </UserControl.Styles>
 
     <Grid Background="{DynamicResource AppWindowBackgroundBrush}">

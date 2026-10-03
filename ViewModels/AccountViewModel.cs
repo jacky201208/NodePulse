@@ -329,6 +329,7 @@ namespace NodePulse.ViewModels
 
         public AsyncRelayCommand AddOfflineCommand { get; }
         public AsyncRelayCommand AddYggdrasilCommand { get; }
+        public AsyncRelayCommand AddMicrosoftCommand { get; }
         public AsyncRelayCommand RemoveCurrentCommand { get; }
         public RelayCommand SetCurrentCommand { get; }
         public AsyncRelayCommand ChangeProfileCommand { get; }
@@ -351,6 +352,7 @@ namespace NodePulse.ViewModels
 
             AddOfflineCommand = new AsyncRelayCommand(AddOfflineAsync);
             AddYggdrasilCommand = new AsyncRelayCommand(AddYggdrasilAsync);
+            AddMicrosoftCommand = new AsyncRelayCommand(AddMicrosoftAsync);
             RemoveCurrentCommand = new AsyncRelayCommand(RemoveCurrentAsync);
             SetCurrentCommand = new RelayCommand(SetCurrentFromCard);
             ChangeProfileCommand = new AsyncRelayCommand(ChangeProfileAsync);
@@ -1237,6 +1239,75 @@ namespace NodePulse.ViewModels
             RefreshAll();
 
             StatusText = $"外置登录成功：{acc.Username} @ {acc.ServerName}";
+        }
+
+        // ================================================================
+        // 添加正版（微软）账户
+        // ================================================================
+
+        private async Task AddMicrosoftAsync()
+        {
+            StatusText = "正在打开微软授权...";
+
+            var login = await _dialogService.ShowMicrosoftLoginAsync();
+
+            if (login == null)
+            {
+                StatusText = "已取消微软登录";
+                return;
+            }
+
+            var acc = new Account
+            {
+                Username = login.Username,
+                Uuid = FormatUuid(login.Uuid),
+                AccessToken = login.AccessToken,
+                ClientToken = MicrosoftAuth.ClientId,
+                UserType = "msa",
+                AccountType = "microsoft",
+                ServerName = "Microsoft",
+                LastLoginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+            };
+
+            var existing = Accounts.FirstOrDefault(a =>
+                a.AccountType == "microsoft" &&
+                a.Uuid == acc.Uuid);
+
+            if (existing != null)
+            {
+                int idx = Accounts.IndexOf(existing);
+                Accounts[idx] = acc;
+                _currentIndex = idx;
+                _cardAvatarCache.Remove(acc.Id);
+            }
+            else
+            {
+                Accounts.Add(acc);
+                _currentIndex = Accounts.Count - 1;
+            }
+
+            if (CurrentAccount == null || CurrentAccount.AccountType != "microsoft")
+                CurrentAccount = acc;
+
+            Persist();
+            RefreshAll();
+
+            StatusText = $"正版登录成功：{acc.Username}";
+        }
+
+        /// <summary>把无连字符 UUID 还原为带连字符形式。</summary>
+        private static string FormatUuid(string raw)
+        {
+            raw = raw?.Trim() ?? "";
+            if (raw.Length == 32 && !raw.Contains('-'))
+            {
+                return raw.Substring(0, 8) + "-" +
+                       raw.Substring(8, 4) + "-" +
+                       raw.Substring(12, 4) + "-" +
+                       raw.Substring(16, 4) + "-" +
+                       raw.Substring(20, 12);
+            }
+            return raw;
         }
 
         // ================================================================

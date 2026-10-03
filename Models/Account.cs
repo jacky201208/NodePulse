@@ -40,6 +40,17 @@ namespace NodePulse.Models
             _ => AccountType
         };
 
+        /// <summary>用户名首字母（用于头像兜底/列表展示），不参与序列化。</summary>
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string Initial
+        {
+            get
+            {
+                var n = Username?.Trim() ?? "";
+                return n.Length > 0 ? n.Substring(0, 1).ToUpperInvariant() : "?";
+            }
+        }
+
         public string DisplayText => $"{Username}  [{TypeLabel}]";
 
         public bool IsYggdrasil => AccountType == "yggdrasil";

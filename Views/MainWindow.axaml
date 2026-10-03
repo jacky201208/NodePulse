@@ -159,25 +159,8 @@
         </Style>
 
         <!-- ============================================================ -->
-        <!-- 下载任务按钮                                                  -->
+        <!-- 下载任务按钮（外观已由全局取消按钮 cancelJobBtn 统一提供）       -->
         <!-- ============================================================ -->
-
-        <Style Selector="Button.cancelJobBtn">
-            <Setter Property="Width" Value="80"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Background" Value="{DynamicResource ButtonDangerBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="CornerRadius" Value="4"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-        </Style>
-        <Style Selector="Button.cancelJobBtn:pointerover">
-            <Setter Property="Background" Value="#B84455"/>
-        </Style>
 
         <Style Selector="Button.expandBtn">
             <Setter Property="Width" Value="32"/>
@@ -200,24 +183,6 @@
             <Setter Property="StrokeJoin" Value="Round"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-
-        <Style Selector="Button.backCircleBtn">
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="CornerRadius" Value="20"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Background" Value="{DynamicResource ButtonSecondaryBrush}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style Selector="Button.backCircleBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
-        </Style>
-        <Style Selector="Button.backCircleBtn:pressed">
-            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
         </Style>
     </Window.Styles>
 
@@ -466,8 +431,8 @@
                                     Content="刷新"
                                     Command="{Binding RefreshCommand}"
                                     Height="32" Margin="8 0 0 0"
-                                    Background="{DynamicResource ButtonSecondaryBrush}"
-                                    Foreground="{DynamicResource TextPrimaryBrush}"
+                                    Background="{StaticResource BtnGradientBrush}"
+                                    Foreground="White"
                                     CornerRadius="4"/>
                         </Grid>
                     </Border>

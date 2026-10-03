@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -27,6 +28,10 @@ namespace NodePulse.Models
 
         [JsonPropertyName("minecraftFolder")]
         public string MinecraftFolder { get; set; } = "";
+
+        /// <summary>历史导入过的 Minecraft 文件夹列表（用于随时切换）</summary>
+        [JsonPropertyName("minecraftFolders")]
+        public List<string> MinecraftFolders { get; set; } = new();
 
         /// <summary>界面语言</summary>
         [JsonPropertyName("language")]

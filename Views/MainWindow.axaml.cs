@@ -6,6 +6,7 @@ using NodePulse.Services;
 using NodePulse.ViewModels;
 using NodePulse.Views;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +15,13 @@ namespace NodePulse;
 public partial class MainWindow : Window
 {
     private readonly IDialogService _dialogService;
+    private readonly MainWindowViewModel _mainVm;
+    private readonly SemaphoreSlim _switchSemaphore = new SemaphoreSlim(1, 1);
     private CancellationTokenSource? _toastCts;
+    private LaunchViewModel? _launchVm;
+    private InstanceViewModel? _instanceVm;
+    private AccountViewModel? _accountVm;
+    private GlobalSettingsViewModel? _globalSettingsVm;
 
     // 缓存的 TransformOperations
     private static readonly Avalonia.Media.Transformation.TransformOperations
@@ -38,6 +45,9 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         _dialogService = new AvaloniaDialogService(this);
+
+        _mainVm = new MainWindowViewModel(_dialogService);
+        _mainVm.NavigationRequested += async (view) => await SwitchPageAsync(view);
 
         DataContext = DownloadViewModel.Instance;
 
@@ -83,7 +93,10 @@ public partial class MainWindow : Window
         {
             MultiplayerViewModel.Current?.Shutdown();
         }
-        catch { }
+        catch (Exception ex)
+        {
+            LogError(ex);
+        }
     }
 
     private async void ShowToast(string message)
@@ -112,6 +125,21 @@ public partial class MainWindow : Window
         catch (TaskCanceledException)
         {
         }
+        catch (Exception ex)
+        {
+            LogError(ex);
+        }
+    }
+
+    private static void LogError(Exception ex)
+    {
+        try
+        {
+            var logPath = Path.Combine(AppContext.BaseDirectory, "ui.log");
+            File.AppendAllText(logPath,
+                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}]{Environment.NewLine}{ex}{Environment.NewLine}");
+        }
+        catch { }
     }
 
     private void OnFloatingButtonPressed(object? sender, PointerPressedEventArgs e)
@@ -121,13 +149,39 @@ public partial class MainWindow : Window
 
     private async Task SwitchPageAsync(string viewName)
     {
+        await _switchSemaphore.WaitAsync();
+        try
+        {
+            await SwitchPageCoreAsync(viewName);
+        }
+        finally
+        {
+            _switchSemaphore.Release();
+        }
+    }
+
+    private async Task OpenSettingsAsync(string versionName, string returnToView)
+    {
+        var svm = new SettingsViewModel(_dialogService);
+        svm.ReturnRequested += async () =>
+        {
+            await SwitchPageAsync(returnToView);
+        };
+
+        MainContent.Content = new SettingsView { DataContext = svm };
+        await svm.LoadDataAsync();
+        await svm.SelectVersionAsync(versionName);
+    }
+
+    private async Task SwitchPageCoreAsync(string viewName)
+    {
         // 淡出 + 下移
         try
         {
             MainContent.Opacity = 0;
             MainContent.RenderTransform = PageIncoming;
         }
-        catch { }
+        catch (Exception ex) { LogError(ex); }
 
         await Task.Delay(240);
 
@@ -135,45 +189,28 @@ public partial class MainWindow : Window
         {
             case nameof(LaunchView):
             {
-                var vm = new LaunchViewModel(_dialogService);
-                vm.NotificationRequested += ShowToast;
-
-                // ★ 处理"实例设置"事件 → 打开实例设置页
-                vm.SettingsRequested += async (versionName) =>
+                if (_launchVm == null)
                 {
-                    var svm = new SettingsViewModel(_dialogService);
-                    svm.ReturnRequested += async () =>
-                    {
-                        await SwitchPageAsync(nameof(LaunchView));
-                    };
+                    _launchVm = new LaunchViewModel(_dialogService);
+                    _launchVm.NotificationRequested += ShowToast;
+                    _launchVm.SettingsRequested +=
+                        async (versionName) => await OpenSettingsAsync(versionName, nameof(LaunchView));
+                    await _launchVm.LoadDataAsync();
+                }
 
-                    MainContent.Content = new SettingsView { DataContext = svm };
-                    await svm.LoadDataAsync();
-                    await svm.SelectVersionAsync(versionName);
-                };
-
-                MainContent.Content = new LaunchView { DataContext = vm };
-                await vm.LoadDataAsync();
+                MainContent.Content = new LaunchView { DataContext = _launchVm };
                 break;
             }
             case nameof(InstanceView):
             {
-                var vm = new InstanceViewModel(_dialogService);
-
-                vm.SettingsRequested += async (versionName) =>
+                if (_instanceVm == null)
                 {
-                    var svm = new SettingsViewModel(_dialogService);
-                    svm.ReturnRequested += async () =>
-                    {
-                        await SwitchPageAsync(nameof(InstanceView));
-                    };
+                    _instanceVm = new InstanceViewModel(_dialogService);
+                    _instanceVm.SettingsRequested +=
+                        async (versionName) => await OpenSettingsAsync(versionName, nameof(InstanceView));
+                }
 
-                    MainContent.Content = new SettingsView { DataContext = svm };
-                    await svm.LoadDataAsync();
-                    await svm.SelectVersionAsync(versionName);
-                };
-
-                MainContent.Content = new InstanceView { DataContext = vm };
+                MainContent.Content = new InstanceView { DataContext = _instanceVm };
                 break;
             }
             case nameof(DownloadView):
@@ -191,15 +228,15 @@ public partial class MainWindow : Window
             }
             case nameof(AccountView):
             {
-                var vm = new AccountViewModel(_dialogService);
-                MainContent.Content = new AccountView { DataContext = vm };
+                _accountVm ??= new AccountViewModel(_dialogService);
+                MainContent.Content = new AccountView { DataContext = _accountVm };
                 break;
             }
             case nameof(GlobalSettingsView):
             {
-                var vm = new GlobalSettingsViewModel(_dialogService);
-                vm.LoadCurrent();
-                MainContent.Content = new GlobalSettingsView { DataContext = vm };
+                _globalSettingsVm ??= new GlobalSettingsViewModel(_dialogService);
+                _globalSettingsVm.LoadCurrent();
+                MainContent.Content = new GlobalSettingsView { DataContext = _globalSettingsVm };
                 break;
             }
             case nameof(AboutView):
@@ -227,6 +264,6 @@ public partial class MainWindow : Window
             MainContent.Opacity = 1;
             MainContent.RenderTransform = PageSettled;
         }
-        catch { }
+        catch (Exception ex) { LogError(ex); }
     }
 }

@@ -34,83 +34,6 @@
             <Setter Property="Foreground" Value="White"/>
         </Style>
 
-        <Style Selector="Button.toolBtn">
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style Selector="Button.toolBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
-        </Style>
-
-        <Style Selector="Button.accentBtn">
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style Selector="Button.accentBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
-        </Style>
-
-        <Style Selector="Button.dangerBtn">
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Background" Value="{DynamicResource ButtonDangerBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style Selector="Button.dangerBtn:pointerover">
-            <Setter Property="Background" Value="#B84455"/>
-        </Style>
-
-        <Style Selector="Button.backCircleBtn">
-            <Setter Property="Width" Value="42"/>
-            <Setter Property="Height" Value="42"/>
-            <Setter Property="CornerRadius" Value="21"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Background" Value="{DynamicResource ButtonSecondaryBrush}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style Selector="Button.backCircleBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
-        </Style>
-
-        <Style Selector="Button.saveBtn">
-            <Setter Property="Width" Value="120"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Background" Value="{DynamicResource ButtonSuccessBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style Selector="Button.saveBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource ButtonSuccessDarkBrush}"/>
-        </Style>
-
         <Style Selector="Border.card">
             <Setter Property="Background" Value="{DynamicResource SurfacePrimaryBrush}"/>
             <Setter Property="CornerRadius" Value="10"/>
@@ -747,8 +670,9 @@
 
             <Grid Grid.Row="3" ColumnDefinitions="Auto,*" Margin="0 12 0 0">
                 <Button Grid.Column="0"
-                        Classes="saveBtn"
+                        Classes="accentBtn"
                         Content="保存设置"
+                        Width="120" Height="40"
                         Command="{Binding SaveSettingsCommand}"/>
                 <TextBlock Grid.Column="1"
                            Text="{Binding StatusText}"

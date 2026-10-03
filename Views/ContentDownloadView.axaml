@@ -58,11 +58,11 @@
             <Setter Property="FontSize" Value="13"/>
         </Style>
         <Style Selector="Button.installBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
         <Style Selector="Button.installBtn:pressed">
-            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
 
         <Style Selector="Button.searchBtn">
@@ -73,14 +73,14 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientBrush}"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
         <Style Selector="Button.searchBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
         <Style Selector="Button.searchBtn:pressed">
-            <Setter Property="Background" Value="#3A80D2"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
 
         <Style Selector="Button.versionInstallBtn">
@@ -92,13 +92,13 @@
             <Setter Property="FontSize" Value="13"/>
         </Style>
         <Style Selector="Button.versionInstallBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
 
         <Style Selector="Button.backBtn">
             <Setter Property="Height" Value="36"/>
             <Setter Property="Padding" Value="14 0"/>
-            <Setter Property="Background" Value="{DynamicResource ButtonSecondaryBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientBrush}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="8"/>
@@ -106,7 +106,7 @@
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
         <Style Selector="Button.backBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
         <Style Selector="Button.backBtn TextBlock">
             <Setter Property="Foreground" Value="White"/>
@@ -118,21 +118,19 @@
             <Setter Property="MinWidth" Value="100"/>
             <Setter Property="Padding" Value="18 0"/>
             <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondaryBrush}"/>
-            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
         <Style Selector="Button.pageBtn:pointerover">
-            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
         <Style Selector="Button.pageBtn:pressed">
-            <Setter Property="Background" Value="{DynamicResource SurfacePressedBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BtnGradientHoverBrush}"/>
         </Style>
         <Style Selector="Button.pageBtn:disabled">
             <Setter Property="Opacity" Value="0.4"/>
