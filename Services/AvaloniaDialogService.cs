@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+dotnet runusing Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;

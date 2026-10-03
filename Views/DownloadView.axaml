@@ -1,4 +1,4 @@
-<UserControl x:Class="NodePulse.Views.DownloadView"
+c<UserControl x:Class="NodePulse.Views.DownloadView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:views="clr-namespace:NodePulse.Views"
