@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -12,10 +13,8 @@ namespace NodePulse.Services.Multiplayer
     /// <summary>
     /// 陶瓦联机服务：管理 terracotta 进程 + 调用 HTTP API。
     /// 
-    /// 启动方式：terracotta.exe --hmcl2 &lt;handoff.json&gt;
-    ///   ★ --hmcl2 让 terracotta 以 HMCL 兼容模式运行：
-    ///     - 不自动打开浏览器
-    ///     - 把 HTTP 端口写入 handoff.json（比解析 stdout 稳）
+    /// 启动方式：terracotta.exe（不传 hmcl 参数，走 server/主控台模式）
+    ///   - 稳定运行，HTTP 控制端口从 stdout 的 Rocket has launched from http://127.0.0.1:&lt;port&gt; 解析
     /// 
     /// 关闭方式：/state/ide → /panic?peaceful=true → 等待进程退出 → Kill
     /// </summary>
@@ -26,6 +25,15 @@ namespace NodePulse.Services.Multiplayer
         private int _port;
         private bool _disposed;
         private string? _handoffPath;
+
+        // 捕获进程输出，用于失败时给出可诊断的报错
+        private readonly StringBuilder _capturedOut = new();
+        private readonly StringBuilder _capturedErr = new();
+        private int? _exitCode;
+
+        // 从 stdout 解析出的 HTTP 控制端口
+        private TaskCompletionSource<int>? _portTcs;
+        private bool _portParsed;
 
         private const string ExpectedVersion = "0.4.2";
         private static readonly TimeSpan HandoffTimeout = TimeSpan.FromSeconds(20);
@@ -47,14 +55,21 @@ namespace NodePulse.Services.Multiplayer
         {
             if (IsRunning) return;
 
+            _capturedOut.Clear();
+            _capturedErr.Clear();
+            _exitCode = null;
+            _portParsed = false;
+            _portTcs = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+
             string? exePath = await TerracottaBinaryManager.EnsureExecutableAsync(null, ct);
             if (string.IsNullOrEmpty(exePath))
                 throw new Exception("当前平台不支持陶瓦联机（安卓端请走 FFI 实现）");
 
-            // ★ 生成 handoff 临时文件路径
+            // ★ 生成 & 预创建 handoff 文件（必须存在，否则 terracotta 会当未知参数直接退出）
             _handoffPath = Path.Combine(
                 Path.GetTempPath(),
                 $"nodepulse-terracotta-{Guid.NewGuid():N}.json");
+            await File.WriteAllTextAsync(_handoffPath, "{}", ct);
 
             var psi = new ProcessStartInfo
             {
@@ -66,11 +81,15 @@ namespace NodePulse.Services.Multiplayer
                 RedirectStandardError = true
             };
 
-            // ★ 关键：--hmcl2 模式
-            psi.ArgumentList.Add("--hmcl2");
+            // ★ 关键：HMCL 兼容模式（不弹浏览器、稳定运行、把 HTTP 端口写进 handoff 文件）。
+            //   - Windows 二进制用 --hmcl2
+            //   - Linux 二进制用 --hmcl
+            //   所需参数由各平台刻定的二进制决定，二者行为一致。
+            string hmclFlag = OperatingSystem.IsWindows() ? "--hmcl2" : "--hmcl";
+            psi.ArgumentList.Add(hmclFlag);
             psi.ArgumentList.Add(_handoffPath);
 
-            // 双保险：环境变量设置（--hmcl2 已经足够，这里无害）
+            // 双保险：环境变量设置（这里无害）
             try
             {
                 psi.EnvironmentVariables["BROWSER"] = "none";
@@ -86,19 +105,27 @@ namespace NodePulse.Services.Multiplayer
             _process.OutputDataReceived += (s, e) =>
             {
                 if (e.Data != null)
+                {
                     Debug.WriteLine($"[Terracotta] {e.Data}");
+                    _capturedOut.AppendLine(e.Data);
+                    TryParsePort(e.Data);
+                }
             };
             _process.ErrorDataReceived += (s, e) =>
             {
                 if (e.Data != null)
+                {
                     Debug.WriteLine($"[Terracotta] {e.Data}");
+                    _capturedErr.AppendLine(e.Data);
+                }
             };
+            _process.Exited += (s, e) => _exitCode = _process?.ExitCode;
 
             _process.Start();
             _process.BeginOutputReadLine();
             _process.BeginErrorReadLine();
 
-            // ★ 等待 handoff.json 出现，读端口
+            // ★ 等待 handoff 文件或 stdout 解析出端口
             try
             {
                 _port = await WaitForHandoffAsync(_process, _handoffPath, ct);
@@ -135,44 +162,127 @@ namespace NodePulse.Services.Multiplayer
             _ = PollStateLoopAsync(_pollCts.Token);
         }
 
-        private static async Task<int> WaitForHandoffAsync(
+        // 等待 terracotta 上报 HTTP 控制端口。
+        // 主信号：terracotta 会把端口写进 handoff 文件（{"port": xxxx}）
+        // 辅信号：stdout 的 Rocket has launched from http://127.0.0.1:xxxx 或 secondary mode, port=xxxx
+        private async Task<int> WaitForHandoffAsync(
             Process process, string handoffPath, CancellationToken ct)
         {
-            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-            timeoutCts.CancelAfter(HandoffTimeout);
+            // 后台轮询 handoff 文件，一旦读到有效端口就完成 _portTcs
+#pragma warning disable CS4014
+            _ = PollHandoffFileAsync(handoffPath);
+#pragma warning restore CS4014
 
-            while (true)
+            try
             {
-                timeoutCts.Token.ThrowIfCancellationRequested();
+                var port = await _portTcs!.Task.WaitAsync(HandoffTimeout, ct);
+                return port;
+            }
+            catch (TimeoutException)
+            {
+                // 未在超时时间内解析到端口。区分"进程已退出"与"仍在运行"
+                if (process.HasExited)
+                {
+                    int code = process.ExitCode;
+                    var err = _capturedErr.ToString().Trim();
+                    var outp = _capturedOut.ToString().Trim();
+                    var detail = new List<string>
+                    {
+                        $"退出码：{code}"
+                    };
+                    if (!string.IsNullOrEmpty(err))
+                        detail.Add($"错误输出：{err}");
+                    if (!string.IsNullOrEmpty(outp))
+                        detail.Add($"标准输出：{outp}");
+                    if (string.IsNullOrEmpty(err) && string.IsNullOrEmpty(outp))
+                        detail.Add("（进程无任何输出）");
 
-                if (File.Exists(handoffPath))
+                    throw new Exception(
+                        "陶瓦联机启动失败（进程提前退出）\n\n" +
+                        string.Join("\n", detail) + "\n\n" +
+                        "可能原因：\n" +
+                        "· 已有残留的 terracotta 进程在运行（全局互斥锁被占用）\n" +
+                        "· Linux 下缺少动态库依赖（如 libX11、libxcb、libgcc 等）\n" +
+                        "· 已下载的 terracotta 与当前系统不兼容\n" +
+                        "请关闭旧的 terracotta 进程后重试，并根据上方输出定位原因");
+                }
+
+                throw new TimeoutException("启动陶瓦联机超时（20 秒内未收到端口）");
+            }
+        }
+
+        /// <summary>
+        /// 轮询 handoff 文件，读到有效端口后交给 _portTcs（主信号）。
+        /// 完成一次即终止；若磁盘上从未写入端口，则由 stdout 辅信号兜底。
+        /// </summary>
+        private async Task PollHandoffFileAsync(string handoffPath)
+        {
+            try
+            {
+                while (!_portParsed)
                 {
                     try
                     {
-                        var json = await File.ReadAllTextAsync(handoffPath, timeoutCts.Token);
-                        var handoff = JsonSerializer.Deserialize<TerracottaHandoff>(json);
-                        if (handoff != null && handoff.Port > 0 && handoff.Port <= 65535)
-                            return handoff.Port;
+                        var text = await File.ReadAllTextAsync(handoffPath);
+                        using var doc = System.Text.Json.JsonDocument.Parse(text);
+                        if (doc.RootElement.TryGetProperty("port", out var p)
+                            && p.TryGetInt32(out int port)
+                            && port > 0 && port <= 65535
+                            && !_portParsed)
+                        {
+                            _portParsed = true;
+                            _portTcs?.TrySetResult(port);
+                            return;
+                        }
                     }
-                    catch (IOException)
-                    {
-                        // 文件正在写入，等一下再试
-                    }
-                    catch (JsonException)
-                    {
-                        // JSON 还没写完，等一下再试
-                    }
+                    catch (IOException) { }      // 写入中，重试
+                    catch (System.Text.Json.JsonException) { } // 未写完，重试
+
+                    await Task.Delay(80);
                 }
+            }
+            catch { /* 已取消或出错，静默 */ }
+        }
 
-                if (process.HasExited)
-                    throw new Exception("陶瓦联机启动失败（进程提前退出）");
+        /// <summary>
+        /// 从 stdout 行解析 terracotta 的 HTTP 控制端口。
+        /// server 模式：http://127.0.0.1:xxxx
+        /// 兼容 hmcl 伴生模式：Running in secondary mode, port=xxxx
+        /// </summary>
+        private void TryParsePort(string line)
+        {
+            if (_portParsed || _portTcs == null || string.IsNullOrWhiteSpace(line))
+                return;
 
-                try { await Task.Delay(50, timeoutCts.Token); }
-                catch (OperationCanceledException)
+            // server 模式标准输出：Rocket has launched from http://127.0.0.1:<port>
+            var url = System.Text.RegularExpressions.Regex.Match(
+                line, @"http://127\.0\.0\.1:(\d+)");
+            if (url.Success)
+            {
+                if (int.TryParse(url.Groups[1].Value, out int p) && p > 0 && p <= 65535)
                 {
-                    if (ct.IsCancellationRequested) throw;
-                    throw new TimeoutException("启动陶瓦联机超时（20 秒内未收到端口）");
+                    _portParsed = true;
+                    _portTcs.TrySetResult(p);
                 }
+                return;
+            }
+
+            // 兼容 hmcl 伴生模式：Running in secondary mode, port=xxxx
+            if (line.IndexOf("secondary mode", StringComparison.OrdinalIgnoreCase) < 0)
+                return;
+
+            int idx = line.LastIndexOf("port=", StringComparison.OrdinalIgnoreCase);
+            if (idx < 0) return;
+
+            var digits = new string(
+                line.Substring(idx + 5)
+                    .TakeWhile(char.IsDigit)
+                    .ToArray());
+
+            if (int.TryParse(digits, out int port) && port > 0 && port <= 65535)
+            {
+                _portParsed = true;
+                _portTcs.TrySetResult(port);
             }
         }
 
@@ -225,13 +335,15 @@ namespace NodePulse.Services.Multiplayer
             _http = null;
             _port = 0;
 
-            // 清理 handoff 临时文件
-            if (!string.IsNullOrEmpty(_handoffPath))
-            {
-                try { if (File.Exists(_handoffPath)) File.Delete(_handoffPath); }
-                catch { }
-                _handoffPath = null;
-            }
+            CleanupHandoffFile();
+        }
+
+        private void CleanupHandoffFile()
+        {
+            if (string.IsNullOrEmpty(_handoffPath)) return;
+            try { if (File.Exists(_handoffPath)) File.Delete(_handoffPath); }
+            catch { }
+            _handoffPath = null;
         }
 
         // ================================================================
