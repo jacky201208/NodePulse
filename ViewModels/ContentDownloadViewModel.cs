@@ -17,6 +17,25 @@ public partial class ContentDownloadViewModel : ObservableObject
     public string DisplayName { get; }
     public string DefaultSubFolder { get; }
 
+    // ============ 数据源 ============
+
+    public ObservableCollection<string> DataSourceOptions { get; } = new()
+    {
+        "全部", "Modrinth", "CurseForge"
+    };
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsCurseForge))]
+    [NotifyPropertyChangedFor(nameof(IsModrinth))]
+    [NotifyPropertyChangedFor(nameof(IsMerged))]
+    [NotifyPropertyChangedFor(nameof(SourceBadgeVisibility))]
+    private string _selectedDataSource = "全部";
+
+    public bool IsCurseForge => SelectedDataSource == "CurseForge";
+    public bool IsModrinth => SelectedDataSource == "Modrinth";
+    public bool IsMerged => SelectedDataSource == "全部";
+    public bool SourceBadgeVisibility => !IsMerged;
+
     /// <summary>每页条数</summary>
     private const int PageSize = 20;
 
@@ -170,7 +189,6 @@ public partial class ContentDownloadViewModel : ObservableObject
     // 内存 / 释放
     // ================================================================
 
-    /// <summary>释放这个 Tab 的所有图标 Bitmap（切走 Tab 时调用）</summary>
     public void ReleaseIcons()
     {
         foreach (var hit in SearchResults)
@@ -186,7 +204,6 @@ public partial class ContentDownloadViewModel : ObservableObject
         catch { }
     }
 
-    /// <summary>完全清空</summary>
     public void ReleaseAll()
     {
         ReleaseIcons();
@@ -200,7 +217,6 @@ public partial class ContentDownloadViewModel : ObservableObject
         TotalCount = 0;
     }
 
-    /// <summary>清空当前页的结果 + 释放 bitmap（翻页前调用）</summary>
     private void ClearCurrentResults()
     {
         foreach (var hit in SearchResults)
@@ -214,60 +230,31 @@ public partial class ContentDownloadViewModel : ObservableObject
     // 分页核心
     // ================================================================
 
-    /// <summary>
-    /// 加载当前页（CurrentPage）的数据，替换 SearchResults。
-    /// </summary>
     private async Task LoadPageAsync()
     {
         if (IsPageLoading) return;
 
         IsPageLoading = true;
-
-        // 清空旧页（卸载渲染 + 释放 bitmap）
         ClearCurrentResults();
 
         try
         {
             int offset = (CurrentPage - 1) * PageSize;
 
-            var resp = await ModrinthService.SearchModsAsync(
-                _isPopularMode ? "" : _lastQuery,
-                _lastGameVersion,
-                _lastLoader,
-                offset: offset,
-                limit: PageSize,
-                sortByDownloads: _lastSortByDownloads,
-                projectType: ProjectType);
-
-            if (resp?.Hits != null)
+            if (IsMerged)
             {
-                foreach (var hit in resp.Hits)
-                    SearchResults.Add(hit);
-
-                TotalCount = resp.TotalHits;
-                TotalPages = TotalCount > 0
-                    ? (int)Math.Ceiling(TotalCount / (double)PageSize)
-                    : 0;
-
-                // 越界保护：比如总共只有 3 页但用户点到了第 5 页
-                if (SearchResults.Count == 0 && CurrentPage > 1 && TotalPages > 0)
-                {
-                    CurrentPage = TotalPages;
-                    IsPageLoading = false;
-                    await LoadPageAsync();
-                    return;
-                }
-
-                // 加载当前页的图标
-                if (resp.Hits.Count > 0)
-                    _ = LoadIconsAsync(resp.Hits);
-
-                ResultsUpdated?.Invoke();
+                await LoadMergedPageAsync(offset);
+            }
+            else if (IsCurseForge)
+            {
+                await LoadCurseForgePageAsync(offset);
             }
             else
             {
-                StatusMessage = "加载失败，请检查网络";
+                await LoadModrinthPageAsync(offset);
             }
+
+            ResultsUpdated?.Invoke();
         }
         catch (Exception ex)
         {
@@ -280,6 +267,159 @@ public partial class ContentDownloadViewModel : ObservableObject
             OnPropertyChanged(nameof(CanGoNext));
         }
     }
+
+    private async Task LoadModrinthPageAsync(int offset)
+    {
+        var resp = await ModrinthService.SearchModsAsync(
+            _isPopularMode ? "" : _lastQuery,
+            _lastGameVersion,
+            _lastLoader,
+            offset: offset,
+            limit: PageSize,
+            sortByDownloads: _lastSortByDownloads,
+            projectType: ProjectType);
+
+        if (resp?.Hits != null)
+        {
+            foreach (var hit in resp.Hits)
+                SearchResults.Add(hit);
+
+            TotalCount = resp.TotalHits;
+            TotalPages = TotalCount > 0
+                ? (int)Math.Ceiling(TotalCount / (double)PageSize)
+                : 0;
+
+            if (SearchResults.Count == 0 && CurrentPage > 1 && TotalPages > 0)
+            {
+                CurrentPage = TotalPages;
+                IsPageLoading = false;
+                await LoadPageAsync();
+                return;
+            }
+
+            if (resp.Hits.Count > 0)
+                _ = LoadIconsAsync(resp.Hits, isCf: false);
+        }
+        else
+        {
+            StatusMessage = "加载失败，请检查网络";
+        }
+    }
+
+    private async Task LoadCurseForgePageAsync(int offset)
+    {
+        var classId = CurseForgeService.GetClassId(ProjectType);
+        var resp = await CurseForgeService.SearchModsAsync(
+            _isPopularMode ? "" : _lastQuery,
+            _lastGameVersion,
+            _lastLoader,
+            offset: offset,
+            limit: PageSize,
+            sortByDownloads: _lastSortByDownloads,
+            classId: classId);
+
+        if (resp?.Data != null)
+        {
+            foreach (var hit in resp.Data)
+                SearchResults.Add(CurseForgeConverter.ToSearchHit(hit));
+
+            TotalCount = resp.Pagination?.TotalCount ?? resp.Data.Count;
+            TotalPages = TotalCount > 0
+                ? (int)Math.Ceiling(TotalCount / (double)PageSize)
+                : 0;
+
+            if (SearchResults.Count == 0 && CurrentPage > 1 && TotalPages > 0)
+            {
+                CurrentPage = TotalPages;
+                IsPageLoading = false;
+                await LoadPageAsync();
+                return;
+            }
+
+            if (resp.Data.Count > 0)
+                _ = LoadIconsAsync(resp.Data.Select(h => CurseForgeConverter.ToSearchHit(h)), isCf: true);
+        }
+    }
+
+    private async Task LoadMergedPageAsync(int offset)
+    {
+        var cfClassId = CurseForgeService.GetClassId(ProjectType);
+
+        var mrTask = ModrinthService.SearchModsAsync(
+            _isPopularMode ? "" : _lastQuery,
+            _lastGameVersion,
+            _lastLoader,
+            offset: offset,
+            limit: PageSize,
+            sortByDownloads: _lastSortByDownloads,
+            projectType: ProjectType);
+
+        var cfTask = CurseForgeService.SearchModsAsync(
+            _isPopularMode ? "" : _lastQuery,
+            _lastGameVersion,
+            _lastLoader,
+            offset: offset,
+            limit: PageSize,
+            sortByDownloads: _lastSortByDownloads,
+            classId: cfClassId);
+
+        await Task.WhenAll(mrTask, cfTask);
+
+        var allHits = new List<ModrinthSearchHit>();
+
+        var cfResp = cfTask.Result;
+        if (cfResp?.Data != null)
+        {
+            foreach (var hit in cfResp.Data)
+                allHits.Add(CurseForgeConverter.ToSearchHit(hit));
+        }
+
+        var mrResp = mrTask.Result;
+        if (mrResp?.Hits != null)
+        {
+            foreach (var hit in mrResp.Hits)
+                allHits.Add(hit);
+        }
+
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var deduped = new List<ModrinthSearchHit>();
+        foreach (var hit in allHits)
+        {
+            if (seen.Add(hit.Title))
+                deduped.Add(hit);
+        }
+
+        var page = deduped.Take(PageSize).ToList();
+        foreach (var h in page)
+            SearchResults.Add(h);
+
+        int mrTotal = mrResp?.TotalHits ?? 0;
+        int cfTotal = cfResp?.Pagination?.TotalCount ?? 0;
+        TotalCount = Math.Min(mrTotal + cfTotal, Math.Max(mrTotal, cfTotal) * 2);
+        TotalPages = TotalCount > 0
+            ? (int)Math.Ceiling(TotalCount / (double)PageSize)
+            : 0;
+        if (TotalPages > 50) TotalPages = 50;
+
+        if (SearchResults.Count == 0 && CurrentPage > 1 && TotalPages > 0)
+        {
+            CurrentPage = TotalPages;
+            IsPageLoading = false;
+            await LoadPageAsync();
+            return;
+        }
+
+        if (page.Count > 0)
+        {
+            var cfHits = page.Where(h => IsCfHit(h)).ToList();
+            var mrHits = page.Where(h => !IsCfHit(h)).ToList();
+            if (cfHits.Count > 0) _ = LoadIconsAsync(cfHits, isCf: true);
+            if (mrHits.Count > 0) _ = LoadIconsAsync(mrHits, isCf: false);
+        }
+    }
+
+    private static bool IsCfHit(ModrinthSearchHit hit) =>
+        long.TryParse(hit.ProjectId, out _);
 
     [RelayCommand]
     private async Task NextPageAsync()
@@ -373,7 +513,7 @@ public partial class ContentDownloadViewModel : ObservableObject
     // 图标异步加载
     // ================================================================
 
-    private async Task LoadIconsAsync(IEnumerable<ModrinthSearchHit> hits)
+    private async Task LoadIconsAsync(IEnumerable<ModrinthSearchHit> hits, bool isCf)
     {
         using var sem = new System.Threading.SemaphoreSlim(2);
         var tasks = new List<Task>();
@@ -388,12 +528,13 @@ public partial class ContentDownloadViewModel : ObservableObject
                 await sem.WaitAsync();
                 try
                 {
-                    var bmp = await ModrinthService.LoadIconAsync(local.IconUrl);
+                    var bmp = isCf
+                        ? await CurseForgeService.LoadIconAsync(local.IconUrl)
+                        : await ModrinthService.LoadIconAsync(local.IconUrl);
                     if (bmp != null)
                     {
                         Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                         {
-                            // 二次校验：如果翻页了，这个 hit 已经不在列表里，丢弃
                             if (SearchResults.Contains(local))
                                 local.IconBitmap = bmp;
                         });
@@ -423,12 +564,7 @@ public partial class ContentDownloadViewModel : ObservableObject
         IsLoadingDetail = true;
         IsBetaExpanded = false;
 
-        try
-        {
-            if (CurrentProject != null)
-                CurrentProject.IconBitmap = null;
-        }
-        catch { }
+        try { if (CurrentProject != null) CurrentProject.IconBitmap = null; } catch { }
 
         CurrentProject = null;
         ReleaseVersions.Clear();
@@ -439,26 +575,51 @@ public partial class ContentDownloadViewModel : ObservableObject
 
         try
         {
-            var projectTask = ModrinthService.GetProjectAsync(hit.ProjectId);
-            var versionsTask = ModrinthService.GetVersionsAsync(hit.ProjectId);
+            var isCf = IsMerged ? IsCfHit(hit) : IsCurseForge;
 
-            await Task.WhenAll(projectTask, versionsTask);
+            if (isCf)
+            {
+                if (!long.TryParse(hit.ProjectId, out var cfId)) return;
+                var detail = await CurseForgeService.GetModDetailAsync(cfId);
+                var files = await CurseForgeService.GetFilesAsync(cfId);
 
-            CurrentProject = projectTask.Result;
-            if (CurrentProject != null)
-                _ = LoadProjectIconAsync(CurrentProject);
+                if (detail != null)
+                {
+                    CurrentProject = CurseForgeConverter.ToProject(detail);
+                    _ = LoadProjectIconAsync(CurrentProject, isCf: true);
+                }
 
-            var all = versionsTask.Result;
-            var release = all.Where(v => v.VersionType == "release").ToList();
-            var beta = all.Where(v => v.VersionType != "release").ToList();
+                var all = files.Select(CurseForgeConverter.ToVersion).ToList();
+                var release = all.Where(v => v.VersionType == "release").ToList();
+                var beta = all.Where(v => v.VersionType != "release").ToList();
 
-            release = SortByPreference(release);
-            beta = SortByPreference(beta);
+                release = SortByPreference(release);
+                beta = SortByPreference(beta);
 
-            foreach (var v in release)
-                ReleaseVersions.Add(v);
-            foreach (var v in beta)
-                BetaVersions.Add(v);
+                foreach (var v in release) ReleaseVersions.Add(v);
+                foreach (var v in beta) BetaVersions.Add(v);
+            }
+            else
+            {
+                var projectTask = ModrinthService.GetProjectAsync(hit.ProjectId);
+                var versionsTask = ModrinthService.GetVersionsAsync(hit.ProjectId);
+
+                await Task.WhenAll(projectTask, versionsTask);
+
+                CurrentProject = projectTask.Result;
+                if (CurrentProject != null)
+                    _ = LoadProjectIconAsync(CurrentProject, isCf: false);
+
+                var all = versionsTask.Result;
+                var release = all.Where(v => v.VersionType == "release").ToList();
+                var beta = all.Where(v => v.VersionType != "release").ToList();
+
+                release = SortByPreference(release);
+                beta = SortByPreference(beta);
+
+                foreach (var v in release) ReleaseVersions.Add(v);
+                foreach (var v in beta) BetaVersions.Add(v);
+            }
 
             OnPropertyChanged(nameof(HasBetaVersions));
             OnPropertyChanged(nameof(BetaHeaderText));
@@ -476,43 +637,32 @@ public partial class ContentDownloadViewModel : ObservableObject
         }
     }
 
-    private List<ModrinthVersion> SortByPreference(List<ModrinthVersion> versions)
-    {
-        return versions
+    private List<ModrinthVersion> SortByPreference(List<ModrinthVersion> versions) =>
+        versions
             .OrderByDescending(v => MatchScore(v))
             .ThenByDescending(v => ParseDate(v.DatePublished))
             .ToList();
-    }
 
     private int MatchScore(ModrinthVersion v)
     {
         int score = 0;
-
         if (!string.IsNullOrEmpty(_preferredGameVersion) &&
-            v.GameVersions.Any(g => g.Equals(_preferredGameVersion,
-                StringComparison.OrdinalIgnoreCase)))
-        {
+            v.GameVersions.Any(g => g.Equals(_preferredGameVersion, StringComparison.OrdinalIgnoreCase)))
             score += 2;
-        }
-
         if (!string.IsNullOrEmpty(_preferredLoader) &&
-            v.Loaders.Any(l => l.Equals(_preferredLoader,
-                StringComparison.OrdinalIgnoreCase)))
-        {
+            v.Loaders.Any(l => l.Equals(_preferredLoader, StringComparison.OrdinalIgnoreCase)))
             score += 1;
-        }
-
         return score;
     }
 
-    private static DateTime ParseDate(string s)
-    {
-        return DateTime.TryParse(s, out var dt) ? dt : DateTime.MinValue;
-    }
+    private static DateTime ParseDate(string s) =>
+        DateTime.TryParse(s, out var dt) ? dt : DateTime.MinValue;
 
-    private async Task LoadProjectIconAsync(ModrinthProject project)
+    private async Task LoadProjectIconAsync(ModrinthProject project, bool isCf)
     {
-        var bmp = await ModrinthService.LoadIconAsync(project.IconUrl);
+        var bmp = isCf
+            ? await CurseForgeService.LoadIconAsync(project.IconUrl)
+            : await ModrinthService.LoadIconAsync(project.IconUrl);
         if (bmp != null)
         {
             Avalonia.Threading.Dispatcher.UIThread.Post(() =>
@@ -527,29 +677,17 @@ public partial class ContentDownloadViewModel : ObservableObject
     private void CloseDetail()
     {
         IsDetailView = false;
-
-        try
-        {
-            if (CurrentProject != null)
-                CurrentProject.IconBitmap = null;
-        }
-        catch { }
-
+        try { if (CurrentProject != null) CurrentProject.IconBitmap = null; } catch { }
         CurrentProject = null;
-
         ReleaseVersions.Clear();
         BetaVersions.Clear();
         IsBetaExpanded = false;
         StatusMessage = "";
-
         ResultsUpdated?.Invoke();
     }
 
     [RelayCommand]
-    private void ToggleBeta()
-    {
-        IsBetaExpanded = !IsBetaExpanded;
-    }
+    private void ToggleBeta() => IsBetaExpanded = !IsBetaExpanded;
 
     // ================================================================
     // 安装
@@ -568,7 +706,17 @@ public partial class ContentDownloadViewModel : ObservableObject
         }
 
         var name = CurrentProject?.Title ?? "未知项目";
-        await ShowSaveAndDownloadAsync(file, name);
+        var isCf = IsCurseForge || (IsMerged && CurrentProject != null && IsCfHit(new ModrinthSearchHit { ProjectId = CurrentProject.Id }));
+
+        if (isCf && long.TryParse(version.Id, out var cfFileId) &&
+            long.TryParse(CurrentProject?.Id, out var cfId))
+        {
+            await ShowSaveAndDownloadAsync(file, name, cfId: cfId, cfFileId: cfFileId);
+        }
+        else
+        {
+            await ShowSaveAndDownloadAsync(file, name);
+        }
     }
 
     [RelayCommand]
@@ -580,43 +728,77 @@ public partial class ContentDownloadViewModel : ObservableObject
 
         try
         {
-            var versions = await ModrinthService.GetVersionsAsync(
-                hit.ProjectId,
-                gameVersion: null,
-                loader: null);
+            var isCf = IsMerged ? IsCfHit(hit) : IsCurseForge;
 
-            if (versions.Count == 0)
+            if (isCf)
             {
-                StatusMessage = $"「{hit.Title}」没有可用版本";
-                return;
-            }
+                if (!long.TryParse(hit.ProjectId, out var cfId)) return;
 
-            var preferredGame = SelectedGameVersion == "全部" ? "" : SelectedGameVersion;
-            var preferredLoader = SelectedLoader == "全部" ? "" : SelectedLoader.ToLowerInvariant();
-
-            var sorted = versions
-                .OrderByDescending(v =>
+                var files = await CurseForgeService.GetFilesAsync(cfId);
+                if (files.Count == 0)
                 {
-                    int score = 0;
-                    if (!string.IsNullOrEmpty(preferredGame) &&
-                        v.GameVersions.Any(g => g.Equals(preferredGame, StringComparison.OrdinalIgnoreCase)))
-                        score += 2;
-                    if (!string.IsNullOrEmpty(preferredLoader) &&
-                        v.Loaders.Any(l => l.Equals(preferredLoader, StringComparison.OrdinalIgnoreCase)))
-                        score += 1;
-                    return score;
-                })
-                .ThenByDescending(v => ParseDate(v.DatePublished))
-                .ToList();
+                    StatusMessage = $"「{hit.Title}」没有可用文件";
+                    return;
+                }
 
-            var file = sorted[0].PrimaryFile;
-            if (file == null)
-            {
-                StatusMessage = "该版本没有可下载的文件";
-                return;
+                var preferredGame = SelectedGameVersion == "全部" ? "" : SelectedGameVersion;
+                var sorted = files
+                    .OrderByDescending(f =>
+                    {
+                        int score = 0;
+                        if (!string.IsNullOrEmpty(preferredGame) &&
+                            f.GameVersions.Any(g => g.Equals(preferredGame, StringComparison.OrdinalIgnoreCase)))
+                            score += 2;
+                        return score;
+                    })
+                    .ThenByDescending(f => ParseDate(f.FileDate))
+                    .ToList();
+
+                var best = sorted[0];
+                await ShowSaveAndDownloadAsync(
+                    new ModrinthFile { Url = best.DownloadUrl ?? "", Filename = best.FileName, Size = best.FileLength, Primary = true },
+                    hit.Title,
+                    cfId: cfId,
+                    cfFileId: best.Id);
             }
+            else
+            {
+                var versions = await ModrinthService.GetVersionsAsync(
+                    hit.ProjectId, gameVersion: null, loader: null);
 
-            await ShowSaveAndDownloadAsync(file, hit.Title);
+                if (versions.Count == 0)
+                {
+                    StatusMessage = $"「{hit.Title}」没有可用版本";
+                    return;
+                }
+
+                var preferredGame = SelectedGameVersion == "全部" ? "" : SelectedGameVersion;
+                var preferredLoader = SelectedLoader == "全部" ? "" : SelectedLoader.ToLowerInvariant();
+
+                var sorted = versions
+                    .OrderByDescending(v =>
+                    {
+                        int score = 0;
+                        if (!string.IsNullOrEmpty(preferredGame) &&
+                            v.GameVersions.Any(g => g.Equals(preferredGame, StringComparison.OrdinalIgnoreCase)))
+                            score += 2;
+                        if (!string.IsNullOrEmpty(preferredLoader) &&
+                            v.Loaders.Any(l => l.Equals(preferredLoader, StringComparison.OrdinalIgnoreCase)))
+                            score += 1;
+                        return score;
+                    })
+                    .ThenByDescending(v => ParseDate(v.DatePublished))
+                    .ToList();
+
+                var file = sorted[0].PrimaryFile;
+                if (file == null)
+                {
+                    StatusMessage = "该版本没有可下载的文件";
+                    return;
+                }
+
+                await ShowSaveAndDownloadAsync(file, hit.Title);
+            }
         }
         catch (Exception ex)
         {
@@ -624,7 +806,8 @@ public partial class ContentDownloadViewModel : ObservableObject
         }
     }
 
-    private async Task ShowSaveAndDownloadAsync(ModrinthFile file, string itemName)
+    private async Task ShowSaveAndDownloadAsync(ModrinthFile file, string itemName,
+        long cfId = 0, long cfFileId = 0)
     {
         if (DialogService == null)
         {
@@ -641,12 +824,7 @@ public partial class ContentDownloadViewModel : ObservableObject
                 SelectedInstance.Name,
                 DefaultSubFolder);
 
-            try
-            {
-                Directory.CreateDirectory(dir);
-                startDir = dir;
-            }
-            catch { }
+            try { Directory.CreateDirectory(dir); startDir = dir; } catch { }
         }
 
         var targetPath = await DialogService.ShowSaveFileAsync(
@@ -668,10 +846,7 @@ public partial class ContentDownloadViewModel : ObservableObject
             return;
         }
 
-        try
-        {
-            Directory.CreateDirectory(targetDir);
-        }
+        try { Directory.CreateDirectory(targetDir); }
         catch (Exception ex)
         {
             StatusMessage = $"创建目录失败：{ex.Message}";
@@ -706,62 +881,22 @@ public partial class ContentDownloadViewModel : ObservableObject
 
         StatusMessage = $"正在下载 {Path.GetFileName(targetPath)}...";
 
-        long prevBytes = 0;
-        var lastTime = DateTime.UtcNow;
-
         try
         {
             await Task.Run(async () =>
             {
-                await ModrinthService.DownloadFileToPathAsync(
-                    file,
-                    targetPath,
-                    (read, total) =>
-                    {
-                        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-                        {
-                            double pct = total > 0 ? (double)read / total * 100 : 0;
-
-                            localJob.DownloadedBytes = read;
-                            localJob.TotalBytes = total;
-                            localJob.Percent = pct;
-
-                            globalJob.TotalPercent = pct;
-                            globalJob.StagePercent = pct;
-                            globalJob.BytesPercent = pct;
-                            globalJob.CurrentFile = Path.GetFileName(targetPath);
-                            globalJob.Stage = "下载中...";
-                            globalJob.StageDescription = total > 0
-                                ? $"{read / 1024.0 / 1024:F1} / {total / 1024.0 / 1024:F1} MB"
-                                : $"{read / 1024.0 / 1024:F1} MB";
-                            globalJob.DownloadedSize = $"{read / 1024.0 / 1024:F1} MB";
-                            globalJob.TotalSize = total > 0
-                                ? $"{total / 1024.0 / 1024:F1} MB"
-                                : "";
-
-                            var now = DateTime.UtcNow;
-                            var dt = (now - lastTime).TotalSeconds;
-                            if (dt >= 0.5)
-                            {
-                                long delta = read - prevBytes;
-                                if (delta > 0)
-                                {
-                                    double speed = delta / dt;
-                                    globalJob.SpeedText = speed < 1024
-                                        ? $"{speed:F0} B/s"
-                                        : speed < 1024 * 1024
-                                            ? $"{speed / 1024:F1} KB/s"
-                                            : $"{speed / 1024 / 1024:F2} MB/s";
-                                }
-                                prevBytes = read;
-                                lastTime = now;
-                            }
-
-                            globalVm.NotifyExternalJobUpdated();
-
-                            StatusMessage = $"正在下载 {Path.GetFileName(targetPath)}... {pct:F0}%";
-                        });
-                    });
+                if (cfId > 0 && cfFileId > 0)
+                {
+                    await CurseForgeService.DownloadFileToPathAsync(
+                        cfId, cfFileId, targetPath,
+                        (read, total) => ReportProgress(read, total, targetPath, localJob, globalJob, globalVm));
+                }
+                else
+                {
+                    await ModrinthService.DownloadFileToPathAsync(
+                        file, targetPath,
+                        (read, total) => ReportProgress(read, total, targetPath, localJob, globalJob, globalVm));
+                }
             });
 
             globalJob.TotalPercent = 100;
@@ -778,10 +913,7 @@ public partial class ContentDownloadViewModel : ObservableObject
             StatusMessage = $"「{Path.GetFileName(targetPath)}」下载完成";
             NotificationRequested?.Invoke($"{DisplayName}「{itemName}」下载完成");
 
-            _ = Task.Delay(2000).ContinueWith(_ =>
-            {
-                globalVm.RemoveExternalJob(globalJob);
-            });
+            _ = Task.Delay(2000).ContinueWith(_ => globalVm.RemoveExternalJob(globalJob));
         }
         catch (Exception ex)
         {
@@ -795,10 +927,57 @@ public partial class ContentDownloadViewModel : ObservableObject
             StatusMessage = $"下载失败：{ex.Message}";
             NotificationRequested?.Invoke($"下载失败：{ex.Message}");
 
-            _ = Task.Delay(3000).ContinueWith(_ =>
-            {
-                globalVm.RemoveExternalJob(globalJob);
-            });
+            _ = Task.Delay(3000).ContinueWith(_ => globalVm.RemoveExternalJob(globalJob));
         }
+    }
+
+    private long _prevBytes;
+    private DateTime _lastTime = DateTime.UtcNow;
+
+    private void ReportProgress(long read, long total, string targetPath,
+        ModDownloadJob localJob, DownloadJob globalJob, DownloadViewModel globalVm)
+    {
+        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        {
+            double pct = total > 0 ? (double)read / total * 100 : 0;
+
+            localJob.DownloadedBytes = read;
+            localJob.TotalBytes = total;
+            localJob.Percent = pct;
+
+            globalJob.TotalPercent = pct;
+            globalJob.StagePercent = pct;
+            globalJob.BytesPercent = pct;
+            globalJob.CurrentFile = Path.GetFileName(targetPath);
+            globalJob.Stage = "下载中...";
+            globalJob.StageDescription = total > 0
+                ? $"{read / 1024.0 / 1024:F1} / {total / 1024.0 / 1024:F1} MB"
+                : $"{read / 1024.0 / 1024:F1} MB";
+            globalJob.DownloadedSize = $"{read / 1024.0 / 1024:F1} MB";
+            globalJob.TotalSize = total > 0
+                ? $"{total / 1024.0 / 1024:F1} MB"
+                : "";
+
+            var now = DateTime.UtcNow;
+            var dt = (now - _lastTime).TotalSeconds;
+            if (dt >= 0.5)
+            {
+                long delta = read - _prevBytes;
+                if (delta > 0)
+                {
+                    double speed = delta / dt;
+                    globalJob.SpeedText = speed < 1024
+                        ? $"{speed:F0} B/s"
+                        : speed < 1024 * 1024
+                            ? $"{speed / 1024:F1} KB/s"
+                            : $"{speed / 1024 / 1024:F2} MB/s";
+                }
+                _prevBytes = read;
+                _lastTime = now;
+            }
+
+            globalVm.NotifyExternalJobUpdated();
+            StatusMessage = $"正在下载 {Path.GetFileName(targetPath)}... {pct:F0}%";
+        });
     }
 }

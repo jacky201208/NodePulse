@@ -104,6 +104,71 @@
         <Style Selector="ListBox.javaList ListBoxItem:selected controls|EmojiIcon.javaCheck">
             <Setter Property="IsVisible" Value="True"/>
         </Style>
+
+        <!-- ============================================================ -->
+        <!-- 模组列表样式 -->
+        <!-- ============================================================ -->
+        <Style Selector="ListBox.modList">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style Selector="ListBox.modList ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0 0 0 6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="ListBox.modList ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.modList ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style Selector="Border.modCard">
+            <Setter Property="Background" Value="{DynamicResource SurfaceSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSubtleBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12 10"/>
+        </Style>
+
+        <Style Selector="Button.modActionBtn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="56"/>
+        </Style>
+        <Style Selector="Button.modActionBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        </Style>
+
+        <Style Selector="Button.modDeleteBtn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="56"/>
+        </Style>
+        <Style Selector="Button.modDeleteBtn:pointerover">
+            <Setter Property="Background" Value="#3A1515"/>
+            <Setter Property="Foreground" Value="#FF6B6B"/>
+        </Style>
+
+        <Style Selector="CheckBox.modCheck">
+            <Setter Property="Margin" Value="0 0 8 0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
     </UserControl.Styles>
 
     <Grid Background="{DynamicResource AppWindowBackgroundBrush}">
@@ -158,7 +223,8 @@
                                         Classes.selected="{Binding IsSelected}"
                                         Command="{Binding $parent[UserControl].DataContext.SelectTabCommand}"
                                         CommandParameter="{Binding}"
-                                        Content="{Binding DisplayName}"/>
+                                        Content="{Binding DisplayName}"
+                                        IsVisible="{Binding IsVisible}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -402,7 +468,6 @@
                                                                    Foreground="{DynamicResource TextMutedBrush}"/>
                                                     </StackPanel>
 
-                                                    <!-- ★ EmojiIcon：check -->
                                                     <controls:EmojiIcon Grid.Column="1"
                                                                         Classes="javaCheck"
                                                                         IconSource="avares://NodePulse/Assets/Icons/Emoji/check.png"
@@ -568,11 +633,198 @@
                     </StackPanel>
                 </ScrollViewer>
 
+                <!-- ======================================================== -->
+                <!-- 模组管理标签页 -->
+                <!-- ======================================================== -->
+                <ScrollViewer IsVisible="{Binding IsModsTab}"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="14">
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="已安装模组" Classes="cardTitle"/>
+
+                                <Grid ColumnDefinitions="*,Auto" Margin="0 0 0 10">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding ModCountText}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="{Binding ModStatusText}"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                                        <Button Classes="toolBtn"
+                                                Content="刷新"
+                                                Command="{Binding RefreshModListCommand}"
+                                                Width="64" Height="30"
+                                                FontSize="12"/>
+                                        <Button Classes="toolBtn"
+                                                Content="打开文件夹"
+                                                Command="{Binding OpenModsFolderCommand}"
+                                                Width="90" Height="30"
+                                                FontSize="12"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto,Auto"
+                                      Margin="0 4 0 8">
+                                    <TextBlock Grid.Column="4"
+                                               Text="文件名"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="5"
+                                               Text="大小"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center"
+                                               Width="70"/>
+                                    <TextBlock Grid.Column="6"
+                                               Text="状态"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center"
+                                               Width="56"/>
+                                    <TextBlock Grid.Column="7"
+                                               Text="操作"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center"
+                                               Width="120"/>
+                                </Grid>
+
+                                <ListBox Classes="modList"
+                                         ItemsSource="{Binding ModList}"
+                                         SelectionMode="Multiple">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Classes="modCard">
+                                                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+                                                    <CheckBox Grid.Column="0"
+                                                              Classes="modCheck"
+                                                              IsChecked="{Binding IsSelected}"/>
+
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding DisplayName}"
+                                                               FontSize="13"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               VerticalAlignment="Center"
+                                                               Margin="4 0 8 0"/>
+
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding SizeDisplay}"
+                                                               FontSize="12"
+                                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                                               VerticalAlignment="Center"
+                                                               Width="66"/>
+
+                                                    <TextBlock Grid.Column="3"
+                                                               FontSize="12"
+                                                               VerticalAlignment="Center"
+                                                               Width="50">
+                                                        <TextBlock.Styles>
+                                                            <Style Selector="TextBlock">
+                                                                <Setter Property="Text"
+                                                                       Value=""/>
+                                                                <Setter Property="Foreground"
+                                                                       Value="{DynamicResource TextSecondaryBrush}"/>
+                                                            </Style>
+                                                            <Style Selector="TextBlock[IsEnabled=true]">
+                                                                <Setter Property="Text"
+                                                                       Value="启用"/>
+                                                                <Setter Property="Foreground"
+                                                                       Value="#4CAF50"/>
+                                                            </Style>
+                                                        </TextBlock.Styles>
+                                                        <TextBlock.Text>
+                                                            <Binding Path="IsEnabled"/>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+
+                                                    <StackPanel Grid.Column="4"
+                                                                Orientation="Horizontal"
+                                                                Spacing="6">
+                                                        <Button Classes="modActionBtn"
+                                                                Command="{Binding $parent[UserControl].DataContext.ToggleModCommand}"
+                                                                CommandParameter="{Binding}">
+                                                            <Button.Styles>
+                                                                <Style Selector="Button">
+                                                                    <Setter Property="Content" Value="-"/>
+                                                                </Style>
+                                                                <Style Selector="Button[IsEnabled=true]">
+                                                                    <Setter Property="Content" Value="禁用"/>
+                                                                </Style>
+                                                            </Button.Styles>
+                                                            <Button.Content>
+                                                                <Binding Path="IsEnabled"/>
+                                                            </Button.Content>
+                                                        </Button>
+                                                        <Button Classes="modDeleteBtn"
+                                                                Content="删除"
+                                                                Command="{Binding $parent[UserControl].DataContext.DeleteModCommand}"
+                                                                CommandParameter="{Binding}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock Text="批量操作" Classes="cardTitle"/>
+                                <TextBlock Text="勾选模组后可使用批量操作"
+                                           Classes="hint"
+                                           Margin="0 0 10 0"/>
+                                <WrapPanel Margin="0 4 0 0">
+                                    <Button Classes="toolBtn"
+                                            Content="全选"
+                                            Command="{Binding SelectAllModsCommand}"
+                                            Width="70" Height="32"
+                                            FontSize="12"
+                                            Margin="0 0 8 8"/>
+                                    <Button Classes="toolBtn"
+                                            Content="取消全选"
+                                            Command="{Binding DeselectAllModsCommand}"
+                                            Width="80" Height="32"
+                                            FontSize="12"
+                                            Margin="0 0 8 8"/>
+                                    <Button Classes="toolBtn"
+                                            Content="启用选中"
+                                            Command="{Binding EnableSelectedModsCommand}"
+                                            Width="80" Height="32"
+                                            FontSize="12"
+                                            Margin="0 0 8 8"/>
+                                    <Button Classes="toolBtn"
+                                            Content="禁用选中"
+                                            Command="{Binding DisableSelectedModsCommand}"
+                                            Width="80" Height="32"
+                                            FontSize="12"
+                                            Margin="0 0 8 8"/>
+                                    <Button Classes="dangerBtn"
+                                            Content="删除选中"
+                                            Command="{Binding DeleteSelectedModsCommand}"
+                                            Width="80" Height="32"
+                                            FontSize="12"
+                                            Margin="0 0 8 8"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+
                 <ScrollViewer IsVisible="{Binding IsExportTab}"
                               VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="14">
 
-                        <!-- ★ EmojiIcon：warning -->
                         <Border Background="#2A1F0A"
                                 BorderBrush="#7A5A20"
                                 BorderThickness="1"

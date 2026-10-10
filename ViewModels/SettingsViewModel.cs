@@ -16,6 +16,7 @@ namespace NodePulse.ViewModels
     {
         Overview,
         Settings,
+        Mods,
         Export
     }
 
@@ -25,17 +26,17 @@ namespace NodePulse.ViewModels
         public string DisplayName { get; set; } = "";
 
         [ObservableProperty] private bool _isSelected;
+        [ObservableProperty] private bool _isVisible = true;
     }
 
     public class SettingsViewModel : ViewModelBase
     {
         private readonly IDialogService _dialogService;
 
-        /// <summary>用户点击"← 返回"时触发</summary>
         public event Action? ReturnRequested;
 
         // ================================================================
-        // Tab 栏
+        // Tab
         // ================================================================
 
         public ObservableCollection<InstanceTabItem> Tabs { get; } = new();
@@ -50,13 +51,18 @@ namespace NodePulse.ViewModels
                 {
                     OnPropertyChanged(nameof(IsOverviewTab));
                     OnPropertyChanged(nameof(IsSettingsTab));
+                    OnPropertyChanged(nameof(IsModsTab));
                     OnPropertyChanged(nameof(IsExportTab));
+
+                    if (value == InstanceTabKind.Mods)
+                        _ = RefreshModListAsync();
                 }
             }
         }
 
         public bool IsOverviewTab => SelectedTab == InstanceTabKind.Overview;
         public bool IsSettingsTab => SelectedTab == InstanceTabKind.Settings;
+        public bool IsModsTab => SelectedTab == InstanceTabKind.Mods;
         public bool IsExportTab => SelectedTab == InstanceTabKind.Export;
 
         public RelayCommand<InstanceTabItem> SelectTabCommand { get; }
@@ -66,6 +72,205 @@ namespace NodePulse.ViewModels
             if (tab == null) return;
             foreach (var t in Tabs) t.IsSelected = (t == tab);
             SelectedTab = tab.Kind;
+        }
+
+        // ================================================================
+        // 模组管理
+        // ================================================================
+
+        public ObservableCollection<ModInfo> ModList { get; } = new();
+
+        private string _modStatusText = "";
+        public string ModStatusText
+        {
+            get => _modStatusText;
+            set => SetProperty(ref _modStatusText, value);
+        }
+
+        private string _modCountText = "";
+        public string ModCountText
+        {
+            get => _modCountText;
+            set => SetProperty(ref _modCountText, value);
+        }
+
+        public AsyncRelayCommand RefreshModListCommand { get; private set; }
+        public AsyncRelayCommand<ModInfo> ToggleModCommand { get; private set; }
+        public AsyncRelayCommand<ModInfo> DeleteModCommand { get; private set; }
+        public RelayCommand OpenModsFolderCommand { get; private set; }
+        public RelayCommand SelectAllModsCommand { get; private set; }
+        public RelayCommand DeselectAllModsCommand { get; private set; }
+        public AsyncRelayCommand EnableSelectedModsCommand { get; private set; }
+        public AsyncRelayCommand DisableSelectedModsCommand { get; private set; }
+        public AsyncRelayCommand DeleteSelectedModsCommand { get; private set; }
+
+        private string ModsFolderPath => Path.Combine(
+            VersionScanner.MinecraftFolder, "versions", SelectedVersionName, "mods");
+
+        private async Task RefreshModListAsync()
+        {
+            if (string.IsNullOrWhiteSpace(SelectedVersionName)) return;
+
+            ModStatusText = "正在扫描模组...";
+
+            var folder = ModsFolderPath;
+            var list = await Task.Run(() => ModInfo.Scan(folder));
+
+            ModList.Clear();
+            foreach (var m in list)
+                ModList.Add(m);
+
+            UpdateModCountText();
+            ModStatusText = list.Count == 0
+                ? "模组文件夹为空"
+                : $"共 {list.Count} 个模组";
+        }
+
+        private void UpdateModCountText()
+        {
+            var total = ModList.Count;
+            var enabled = ModList.Count(m => m.IsEnabled);
+            var disabled = total - enabled;
+            ModCountText = total == 0
+                ? "暂无模组"
+                : $"{total} 个模组（{enabled} 启用 / {disabled} 禁用）";
+        }
+
+        private async Task ToggleModAsync(ModInfo? mod)
+        {
+            if (mod == null || string.IsNullOrWhiteSpace(SelectedVersionName)) return;
+
+            try
+            {
+                if (mod.IsEnabled)
+                {
+                    var newPath = mod.FullPath + ".disabled";
+                    File.Move(mod.FullPath, newPath);
+
+                    var idx = ModList.IndexOf(mod);
+                    ModList.RemoveAt(idx);
+                    var updated = new ModInfo
+                    {
+                        FileName = mod.FileName + ".disabled",
+                        FullPath = newPath,
+                        SizeBytes = mod.SizeBytes,
+                        IsSelected = mod.IsSelected
+                    };
+                    ModList.Insert(idx, updated);
+                }
+                else
+                {
+                    var newPath = mod.FullPath[..^".disabled".Length];
+                    File.Move(mod.FullPath, newPath);
+
+                    var idx = ModList.IndexOf(mod);
+                    ModList.RemoveAt(idx);
+                    var updated = new ModInfo
+                    {
+                        FileName = Path.GetFileName(newPath),
+                        FullPath = newPath,
+                        SizeBytes = mod.SizeBytes,
+                        IsSelected = mod.IsSelected
+                    };
+                    ModList.Insert(idx, updated);
+                }
+
+                UpdateModCountText();
+                ModStatusText = mod.IsEnabled ? "已禁用" : "已启用";
+            }
+            catch (Exception ex)
+            {
+                ModStatusText = $"操作失败：{ex.Message}";
+                await _dialogService.ShowMessageAsync("错误", ex.Message);
+            }
+        }
+
+        private async Task DeleteModAsync(ModInfo? mod)
+        {
+            if (mod == null || string.IsNullOrWhiteSpace(SelectedVersionName)) return;
+
+            var confirm = await _dialogService.ShowConfirmAsync(
+                "删除模组",
+                $"确定要删除模组 \"{mod.DisplayName}\" 吗？\n\n此操作不可恢复！");
+            if (!confirm) return;
+
+            try
+            {
+                if (File.Exists(mod.FullPath))
+                    File.Delete(mod.FullPath);
+
+                ModList.Remove(mod);
+                UpdateModCountText();
+                ModStatusText = "已删除";
+            }
+            catch (Exception ex)
+            {
+                ModStatusText = $"删除失败：{ex.Message}";
+                await _dialogService.ShowMessageAsync("错误", ex.Message);
+            }
+        }
+
+        private void OpenModsFolder()
+        {
+            try
+            {
+                var dir = ModsFolderPath;
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                OpenFolderInExplorer(dir);
+            }
+            catch (Exception ex)
+            {
+                ModStatusText = $"打开失败：{ex.Message}";
+            }
+        }
+
+        private void SelectAllMods()
+        {
+            foreach (var m in ModList) m.IsSelected = true;
+        }
+
+        private void DeselectAllMods()
+        {
+            foreach (var m in ModList) m.IsSelected = false;
+        }
+
+        private async Task EnableSelectedModsAsync()
+        {
+            var selected = ModList.Where(m => m.IsSelected && !m.IsEnabled).ToList();
+            foreach (var m in selected)
+                await ToggleModAsync(m);
+        }
+
+        private async Task DisableSelectedModsAsync()
+        {
+            var selected = ModList.Where(m => m.IsSelected && m.IsEnabled).ToList();
+            foreach (var m in selected)
+                await ToggleModAsync(m);
+        }
+
+        private async Task DeleteSelectedModsAsync()
+        {
+            var selected = ModList.Where(m => m.IsSelected).ToList();
+            if (selected.Count == 0) return;
+
+            var confirm = await _dialogService.ShowConfirmAsync(
+                "批量删除模组",
+                $"确定要删除选中的 {selected.Count} 个模组吗？\n\n此操作不可恢复！");
+            if (!confirm) return;
+
+            foreach (var m in selected)
+            {
+                try
+                {
+                    if (File.Exists(m.FullPath))
+                        File.Delete(m.FullPath);
+                    ModList.Remove(m);
+                }
+                catch { }
+            }
+
+            UpdateModCountText();
+            ModStatusText = $"已删除 {selected.Count} 个模组";
         }
 
         // ================================================================
@@ -181,12 +386,10 @@ namespace NodePulse.ViewModels
 
                 bool isAuto = value == "自动选择";
 
-                // 切到手动时，如果列表里还没有选中项，自动挑一个
                 if (!isAuto && _currentSettings.UseAutoJava)
                 {
                     if (_selectedJava == null && JavaList.Count > 0)
                     {
-                        // 优先挑最合适的（够用 + 最小版本）
                         _selectedJava = JavaInfo.PickBest(JavaList, Instance?.JavaMajor ?? 8)
                                         ?? JavaList.FirstOrDefault();
 
@@ -549,6 +752,11 @@ namespace NodePulse.ViewModels
             });
             Tabs.Add(new InstanceTabItem
             {
+                Kind = InstanceTabKind.Mods,
+                DisplayName = "模组"
+            });
+            Tabs.Add(new InstanceTabItem
+            {
                 Kind = InstanceTabKind.Export,
                 DisplayName = "导出"
             });
@@ -565,6 +773,16 @@ namespace NodePulse.ViewModels
             DeleteInstanceCommand = new AsyncRelayCommand(DeleteInstanceAsync);
 
             ExportCommand = new AsyncRelayCommand(ExportAsync, () => !IsExporting);
+
+            RefreshModListCommand = new AsyncRelayCommand(RefreshModListAsync);
+            ToggleModCommand = new AsyncRelayCommand<ModInfo>(ToggleModAsync);
+            DeleteModCommand = new AsyncRelayCommand<ModInfo>(DeleteModAsync);
+            OpenModsFolderCommand = new RelayCommand(OpenModsFolder);
+            SelectAllModsCommand = new RelayCommand(SelectAllMods);
+            DeselectAllModsCommand = new RelayCommand(DeselectAllMods);
+            EnableSelectedModsCommand = new AsyncRelayCommand(EnableSelectedModsAsync);
+            DisableSelectedModsCommand = new AsyncRelayCommand(DisableSelectedModsAsync);
+            DeleteSelectedModsCommand = new AsyncRelayCommand(DeleteSelectedModsAsync);
         }
 
         // ================================================================
@@ -581,7 +799,6 @@ namespace NodePulse.ViewModels
             SelectedVersionName = versionName;
             ExportName = versionName;
 
-            // 后台扫描实例信息
             MinecraftInstance? inst = null;
             try
             {
@@ -593,23 +810,21 @@ namespace NodePulse.ViewModels
 
             if (inst != null)
             {
-                // LoadIcon 必须 UI 线程
                 try { inst.LoadIcon(); } catch { }
                 Instance = inst;
             }
 
-            // 加载实例设置
             CurrentSettings = InstanceSettings.Load(versionName);
 
-            // 如果之前是手动，但选中的 Java 不在列表里（比如换了机器），重新挑一个
             EnsureJavaSelectionValid();
+
+            var hasLoader = !string.IsNullOrEmpty(inst?.LoaderType) && inst.LoaderType != "vanilla";
+            var modsTab = Tabs.FirstOrDefault(t => t.Kind == InstanceTabKind.Mods);
+            if (modsTab != null) modsTab.IsVisible = hasLoader;
 
             StatusText = $"当前实例：{versionName}";
         }
 
-        /// <summary>
-        /// 确保 JavaList 里有一项被选中（当模式是"手动指定"时）
-        /// </summary>
         private void EnsureJavaSelectionValid()
         {
             if (_currentSettings.UseAutoJava) return;
@@ -635,17 +850,14 @@ namespace NodePulse.ViewModels
 
         private void SyncFromSettings()
         {
-            // 内存 slider 初值
             _customMemoryMB = _currentSettings.MaxMemoryMB > 0
                 ? _currentSettings.MaxMemoryMB
                 : AutoMemoryMB;
 
-            // Java
             OnPropertyChanged(nameof(SelectedJavaMode));
             OnPropertyChanged(nameof(IsAutoJava));
             OnPropertyChanged(nameof(IsManualJava));
 
-            // 内存
             OnPropertyChanged(nameof(IsMemoryModeGlobal));
             OnPropertyChanged(nameof(IsMemoryModeAuto));
             OnPropertyChanged(nameof(IsMemoryModeCustom));
@@ -655,25 +867,21 @@ namespace NodePulse.ViewModels
             OnPropertyChanged(nameof(MemoryInfoText));
             OnPropertyChanged(nameof(AutoMemoryMB));
 
-            // 启动选项
             OnPropertyChanged(nameof(InstanceIsolation));
             OnPropertyChanged(nameof(SelectedWindowTitleMode));
             OnPropertyChanged(nameof(IsCustomWindowTitle));
             OnPropertyChanged(nameof(CustomWindowTitle));
             OnPropertyChanged(nameof(CustomInfo));
 
-            // 服务器
             OnPropertyChanged(nameof(OverrideAutoJoinServer));
             OnPropertyChanged(nameof(AutoJoinServerOverride));
 
-            // 参数 / 窗口
             OnPropertyChanged(nameof(JvmArgs));
             OnPropertyChanged(nameof(GameArgs));
             OnPropertyChanged(nameof(WindowWidth));
             OnPropertyChanged(nameof(WindowHeight));
             OnPropertyChanged(nameof(Fullscreen));
 
-            // 同步选中的 Java
             if (!string.IsNullOrEmpty(_currentSettings.JavaPath))
             {
                 _selectedJava = JavaList.FirstOrDefault(j =>
@@ -697,7 +905,6 @@ namespace NodePulse.ViewModels
             foreach (var item in list)
                 JavaList.Add(item);
 
-            // 刷新完后重新匹配当前选中的 Java
             if (!string.IsNullOrEmpty(_currentSettings.JavaPath))
             {
                 SelectedJava = JavaList.FirstOrDefault(j =>
@@ -705,7 +912,6 @@ namespace NodePulse.ViewModels
                         StringComparison.OrdinalIgnoreCase));
             }
 
-            // 如果是手动模式但还没选中，补一个
             EnsureJavaSelectionValid();
 
             StatusText = JavaList.Count == 0
@@ -727,7 +933,6 @@ namespace NodePulse.ViewModels
 
             try
             {
-                // ---------- Java ----------
                 if (IsManualJava)
                 {
                     _currentSettings.UseAutoJava = false;
@@ -738,27 +943,24 @@ namespace NodePulse.ViewModels
                     }
                     else if (string.IsNullOrEmpty(_currentSettings.JavaPath))
                     {
-                        // 手动但没选任何 Java → 回退到自动
                         _currentSettings.UseAutoJava = true;
                         _currentSettings.JavaPath = "";
                     }
                 }
                 else
                 {
-                    // 自动选择：清空手动路径
                     _currentSettings.UseAutoJava = true;
                     _currentSettings.JavaPath = "";
                 }
 
                 _currentSettings.Save(SelectedVersionName);
 
-                // 保存成功后刷新一下 Instance 里的显示（如果当前实例就是它）
                 if (Instance != null && Instance.Name == SelectedVersionName)
                 {
                     _ = ReloadInstanceAsync();
                 }
 
-                StatusText = "✅ 设置保存完成";
+                StatusText = "保存设置完成";
             }
             catch (Exception ex)
             {
@@ -767,7 +969,6 @@ namespace NodePulse.ViewModels
             }
         }
 
-        /// <summary>重新加载 Instance（刷新 Java 显示）</summary>
         private async Task ReloadInstanceAsync()
         {
             try
@@ -850,7 +1051,7 @@ namespace NodePulse.ViewModels
                         SelectedVersionName, progress);
                 });
 
-                StatusText = "✅ 文件补全完成";
+                StatusText = "文件补全完成";
             }
             catch (Exception ex)
             {
@@ -872,7 +1073,7 @@ namespace NodePulse.ViewModels
 
             await ReloadInstanceAsync();
 
-            StatusText = "✅ 已重置为默认设置";
+            StatusText = "已重置为默认设置";
         }
 
         private async Task DeleteInstanceAsync()
@@ -892,7 +1093,7 @@ namespace NodePulse.ViewModels
                 if (Directory.Exists(dir))
                     await Task.Run(() => Directory.Delete(dir, recursive: true));
 
-                StatusText = "✅ 已删除";
+                StatusText = "已删除";
                 await _dialogService.ShowMessageAsync("删除成功",
                     $"实例 \"{SelectedVersionName}\" 已删除。");
                 ReturnRequested?.Invoke();
@@ -949,7 +1150,6 @@ namespace NodePulse.ViewModels
                         FileMode.Create, FileAccess.Write);
                     using var zip = new ZipArchive(fs, ZipArchiveMode.Create);
 
-                    // 1. 版本 JSON
                     var jsonPath = Path.Combine(versionDir, versionName + ".json");
                     if (File.Exists(jsonPath))
                     {
@@ -958,7 +1158,6 @@ namespace NodePulse.ViewModels
                             $"versions/{versionName}/{versionName}.json");
                     }
 
-                    // 2. 实例设置
                     var settingsPath = Path.Combine(versionDir, "instance-settings.json");
                     if (File.Exists(settingsPath))
                     {
@@ -967,7 +1166,6 @@ namespace NodePulse.ViewModels
                             $"versions/{versionName}/instance-settings.json");
                     }
 
-                    // 3. mods / config / resourcepacks / shaderpacks / datapacks
                     if (includeMods)
                     {
                         var folders = new[]
@@ -991,7 +1189,6 @@ namespace NodePulse.ViewModels
                         }
                     }
 
-                    // 4. 存档
                     if (includeSaves)
                     {
                         var savesPath = Path.Combine(versionDir, "saves");
@@ -1008,7 +1205,6 @@ namespace NodePulse.ViewModels
                         }
                     }
 
-                    // 5. 客户端 jar（可选）
                     if (includeJar)
                     {
                         var jarPath = Path.Combine(versionDir, versionName + ".jar");
@@ -1020,7 +1216,6 @@ namespace NodePulse.ViewModels
                         }
                     }
 
-                    // 6. 元数据
                     var metaEntry = zip.CreateEntry("nodepulse-export.json");
                     using var writer = new StreamWriter(metaEntry.Open());
                     writer.Write(
@@ -1033,7 +1228,7 @@ namespace NodePulse.ViewModels
                 });
 
                 ExportProgress = 100;
-                StatusText = $"✅ 已导出到 {targetPath}";
+                StatusText = $"已导出到 {targetPath}";
                 await _dialogService.ShowMessageAsync("导出成功",
                     $"整合包已导出到：\n{targetPath}");
             }
