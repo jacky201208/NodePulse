@@ -1,0 +1,10 @@
+<UserControl x:Class="NodePulse.Controls.EmojiIcon"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent"
+             IsHitTestVisible="False">
+    <Panel>
+        <Image x:Name="PART_Light" Stretch="Uniform"/>
+        <Panel x:Name="PART_Dark" Background="White" IsVisible="False"/>
+    </Panel>
+</UserControl>
